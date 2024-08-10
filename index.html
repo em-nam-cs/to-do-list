@@ -14,11 +14,15 @@
     </head>
     <body>
         <h1>User's To Do List</h1>
-        <form>
-            <label for="list-item"></label>
+        <form
+            name="add-item"
+            class="form"
+        >
+            <label for="new-item"></label>
             <input
                 type="text"
-                name="list-item"
+                name="new-item"
+                class="new-item-input"
                 placeholder="Enter new list item here"
             />
             <label for="submit-item-btn"></label>
@@ -26,6 +30,7 @@
                 type="submit"
                 name="submit-item-btn"
                 id="submit-item-btn"
+                class="submit-item-btn"
                 value="+"
             />
         </form>
