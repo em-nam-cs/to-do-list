@@ -83,14 +83,24 @@ body {
 
 .checkbox,
 .edit-btn,
-.delete-btn {
-    background-color: aliceblue;
+.delete-btn,
+.checkbox:hover.clicked {
+    background-color: transparent;
+    border: 1px solid black;
     height: var(--list-item-height);
     width: var(--list-item-height);
 
     cursor: pointer;
 }
 
-.checked {
+.checkbox:hover,
+.edit-btn:hover,
+.delete-btn:hover {
+    background-color: pink;
+}
+
+.checkbox.clicked.checked, .checked{
     background-color: aqua;
 }
+
+

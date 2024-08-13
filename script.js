@@ -8,9 +8,15 @@ function addCheckboxEventListeners() {
     for (let i = 0; i < checkbox.length; i++) {
         console.log(checkbox[i]);
         checkbox[i].addEventListener("click", toggleCheckbox);
+        checkbox[i].addEventListener("mouseleave", leaveCheckbox);
     }
 }
 
 function toggleCheckbox() {
     this.classList.toggle("checked");
+    this.classList.add("clicked");
+}
+
+function leaveCheckbox() {
+    this.classList.remove("clicked");
 }
