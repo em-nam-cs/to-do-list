@@ -64,9 +64,9 @@ body {
 }
 
 .list-item {
-    border: 1px solid red;
+    border-bottom: 2px solid var(--form-color);
+    padding-bottom: calc(var(--list-item-height)/2);
     min-height: var(--list-item-height);
-    border-radius: var(--form-radius);
 
     display: flex;
     align-items: center;
@@ -74,7 +74,6 @@ body {
 }
 
 .list-item-text {
-    background-color: #d49b9d;
     font-size: calc(var(--list-item-height) * 0.85);
     width: 90%;
 }
