@@ -110,5 +110,5 @@ body {
 .checked {
     background-color: var(--checkbox-color);
     background-size: cover;
-    background-image: url("../assets/checkmark-removebg-preview.png");
+    background-image: url("../assets/checkmark-removebg.png");
 }
