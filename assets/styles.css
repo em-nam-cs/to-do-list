@@ -13,6 +13,8 @@
     --form-color: #d49b9d;
 
     --list-item-height: 1.5rem;
+    --checkbox-color: #92bb77;
+    --checkbox-hover-color: #b3cfa0;
 }
 
 body {
@@ -79,6 +81,7 @@ body {
 .list-item-text {
     font-size: large;
     width: 90%;
+    padding: 0px 5px;
 }
 
 .checkbox,
@@ -96,11 +99,10 @@ body {
 .checkbox:hover,
 .edit-btn:hover,
 .delete-btn:hover {
-    background-color: pink;
+    background-color: var(--checkbox-hover-color);
 }
 
-.checkbox.clicked.checked, .checked{
-    background-color: aqua;
+.checkbox.clicked.checked,
+.checked {
+    background-color: var(--checkbox-color);
 }
-
-
