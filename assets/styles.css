@@ -18,13 +18,14 @@
 body {
     background-color: var(--page-background-color);
     color: var(--page-text-color);
-    margin: 20px;
+    margin: 30px;
 }
 
 .form {
     display: flex;
     height: var(--form-height);
     border: none;
+    margin: 20px 0px;
 }
 
 .form > * {
@@ -37,6 +38,8 @@ body {
     border-bottom-left-radius: var(--form-radius);
     outline: none;
     border-color: transparent;
+
+    font-size: x-large;
 }
 
 .new-item-input:focus {
@@ -65,7 +68,7 @@ body {
 
 .list-item {
     border-bottom: 2px solid var(--form-color);
-    padding-bottom: calc(var(--list-item-height)/2);
+    padding-bottom: calc(var(--list-item-height) / 2);
     min-height: var(--list-item-height);
 
     display: flex;
@@ -74,7 +77,7 @@ body {
 }
 
 .list-item-text {
-    font-size: calc(var(--list-item-height) * 0.85);
+    font-size: large;
     width: 90%;
 }
 
