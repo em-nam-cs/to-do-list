@@ -5,21 +5,25 @@
 }
 
 :root {
-    --color: blue;
+    --page-background-color: #d7d7d5;
+    --page-text-color: #42404f;
 
-    --form-height: 2rem;
+    --form-height: 3rem;
     --form-radius: 10px;
-    --form-color: rgba(178, 178, 23, 0.924);
+    --form-color: #d49b9d;
+
+    --list-item-height: 2rem;
 }
 
 body {
-    background-color: antiquewhite;
+    background-color: var(--page-background-color);
+    color: var(--page-text-color);
     margin: 20px;
 }
 
 .form {
     display: flex;
-    height: 2rem;
+    height: var(--form-height);
     border: none;
 }
 
@@ -44,8 +48,8 @@ body {
 
 .submit-item-btn {
     align-self: flex-end;
-    height: 2rem;
-    width: 2rem;
+    height: var(--form-height);
+    width: var(--form-height);
     border-top-right-radius: var(--form-radius);
     border-bottom-right-radius: var(--form-radius);
     border: none;
@@ -53,9 +57,38 @@ body {
 }
 
 .list-container {
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .list-item {
     border: 1px solid red;
+    min-height: var(--list-item-height);
+    border-radius: var(--form-radius);
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.list-item-text {
+    background-color: #d49b9d;
+    font-size: calc(var(--list-item-height) * 0.85);
+    width: 90%;
+}
+
+.checkbox,
+.edit-btn,
+.delete-btn {
+    background-color: aliceblue;
+    height: var(--list-item-height);
+    width: var(--list-item-height);
+
+    cursor: pointer;
+}
+
+.checked {
+    background-color: aqua;
 }
