@@ -11,6 +11,9 @@
     --form-height: 3rem;
     --form-radius: 10px;
     --form-color: #d49b9d;
+    /* --form-color: #E0B8B9; */
+
+    --accent-color: #5b8266;
 
     --list-item-height: 1.5rem;
     --checkbox-color: #92bb77;
@@ -105,4 +108,6 @@ body {
 .checkbox.clicked.checked,
 .checked {
     background-color: var(--checkbox-color);
+    background-size: cover;
+    background-image: url("../assets/checkmark-removebg-preview.png");
 }
