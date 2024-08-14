@@ -107,6 +107,16 @@ hr {
     cursor: pointer;
 }
 
+.edit-btn {
+    background-size: 90%;
+    background-image: url("../assets/pencil-removebg.png");
+}
+
+.delete-btn {
+    background-size: 95%;
+    background-image: url("../assets/trashcan-removebg.png");
+}
+
 .checkbox:hover {
     background-color: var(--checkbox-hover-color);
 }
