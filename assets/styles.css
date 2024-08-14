@@ -10,14 +10,16 @@
 
     --form-height: 3rem;
     --form-radius: 10px;
-    --form-color: #d49b9d;
-    /* --form-color: #E0B8B9; */
+    --form-color: #e0b8b9;
 
     --accent-color: #5b8266;
 
     --list-item-height: 1.5rem;
     --checkbox-color: #92bb77;
     --checkbox-hover-color: #b3cfa0;
+
+    --edit-color: #f8f8b4;
+    --delete-color: #d49b9d;
 }
 
 body {
@@ -65,6 +67,11 @@ body {
     cursor: pointer;
 }
 
+hr {
+    height: 3px;
+    background-color: var(--page-text-color);
+}
+
 .list-container {
     /* border: 1px solid blue; */
     display: flex;
@@ -73,7 +80,7 @@ body {
 }
 
 .list-item {
-    border-bottom: 2px solid var(--form-color);
+    border-bottom: 1px solid var(--page-text-color);
     padding-bottom: calc(var(--list-item-height) / 2);
     min-height: var(--list-item-height);
 
@@ -100,10 +107,16 @@ body {
     cursor: pointer;
 }
 
-.checkbox:hover,
-.edit-btn:hover,
-.delete-btn:hover {
+.checkbox:hover {
     background-color: var(--checkbox-hover-color);
+}
+
+.edit-btn:hover {
+    background-color: var(--edit-color);
+}
+
+.delete-btn:hover {
+    background-color: var(--delete-color);
 }
 
 .checkbox.clicked.checked,
