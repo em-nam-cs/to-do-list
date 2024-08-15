@@ -17,13 +17,16 @@
         <form
             name="add-item"
             class="form"
+            id="new-item-form"
         >
             <label for="new-item"></label>
             <input
                 type="text"
                 name="new-item"
                 class="new-item-input"
+                id="new-item-input"
                 placeholder="Enter new list item here"
+                autocomplete="off"
             />
             <label for="submit-item-btn"></label>
             <input
@@ -37,7 +40,7 @@
 
         <hr />
 
-        <div class="list-container">
+        <div class="list-container" id="list-container">
             <div class="list-item">
                 <button class="checkbox"></button>
                 <span class="list-item-text">Test task 1</span>
