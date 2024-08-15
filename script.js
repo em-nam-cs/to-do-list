@@ -19,25 +19,57 @@ const listContainerEl = document.getElementById("list-container");
 newItemForm.addEventListener("submit", addNewItem);
 addCheckboxEventListeners();
 
+// const listItems = [];
+
+const listItems = [
+    {
+        task: "TEST task 0",
+        complete: false,
+    },
+    {
+        task: "TEST task 10",
+        complete: true,
+    },
+];
+
+class listItem {
+    constructor(task) {
+        this.task = task;
+        this.complete = false;
+    }
+}
+
 function addNewItem(e) {
     e.preventDefault();
     console.log("submit");
     console.log(newItem.value);
 
-    createNewListItem(newItem.value);
+    addNewItemToList(newItem.value); //add new item to list
+    createNewListItemDOM(); //add most recent item to display on DOM
 }
 
-function createNewListItem(newItem) {
+function addNewItemToList(task) {
+    const newListItem = new listItem(task);
+    listItems.push(newListItem);
+}
+
+function createNewListItemDOM() {
+    const itemToAdd = listItems[listItems.length - 1];
+    console.log(itemToAdd);
+
     const newListItem = document.createElement("div");
     newListItem.classList.add("list-item");
 
     const newCheckbox = document.createElement("button");
     newCheckbox.classList.add("checkbox");
+    if (itemToAdd.complete) {
+        newCheckbox.classList.add("checked");
+    }
 
-    const newText = document.createElement("span");
-    newText.classList.add("list-item-text");
-    const newContent = document.createTextNode(newItem);
-    newText.appendChild(newContent);
+    const newTask = document.createElement("span");
+    newTask.classList.add("task");
+    const newContent = document.createTextNode(itemToAdd.task);
+    newTask.appendChild(newContent);
 
     const newEditBtn = document.createElement("button");
     newEditBtn.classList.add("edit-btn");
@@ -46,7 +78,7 @@ function createNewListItem(newItem) {
     newDeleteBtn.classList.add("delete-btn");
 
     newListItem.appendChild(newCheckbox);
-    newListItem.appendChild(newText);
+    newListItem.appendChild(newTask);
     newListItem.appendChild(newEditBtn);
     newListItem.appendChild(newDeleteBtn);
 
@@ -67,6 +99,9 @@ function toggleCheckbox() {
     this.classList.add("clicked");
 }
 
+/**
+ * consolidate this function with ()=>
+ */
 function leaveCheckbox() {
     this.classList.remove("clicked");
 }

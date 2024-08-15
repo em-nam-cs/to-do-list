@@ -128,7 +128,7 @@ hr {
     gap: 5px;
 }
 
-.list-item-text {
+.task {
     font-size: large;
     width: 90%;
     padding: 0px 5px;
