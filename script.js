@@ -12,11 +12,11 @@ console.log("RUNING Running");
 
 const populate = [
     {
-        task: "TEST task 0",
+        task: "TEST task 1",
         complete: false,
     },
     {
-        task: "TEST task 10",
+        task: "Test task 2 super long text input here Test task 1 super long text input here Test task 1 super long text input here text input here Test task 1 super long text input here Test",
         complete: true,
     },
 ];
@@ -47,21 +47,24 @@ class ListItem {
 
 const newItem = document.getElementById("new-item-input");
 const newItemForm = document.getElementById("new-item-form");
-const checkbox = document.getElementsByClassName("checkbox");
+
 const listContainerEl = document.getElementById("list-container");
+
+const checkbox = document.getElementsByClassName("checkbox");
 const deleteBtn = document.getElementById("delete-btn");
 const editBtn = document.getElementById("edit-btn");
 
+populateAllListItems();
+
+//TODO: ISSUE WITH ADDING EVENT LISTENERS IF LIST ITEMS DON'T EXIST YET (WITHOUT PLACEHOLDER ONES
+//  TROUBLE ADDING EVENT LISTENER ON POPULATED ONES - NEED ASYNC?)
 newItemForm.addEventListener("submit", addNewItem);
 deleteBtn.addEventListener("click", deleteItem);
-addCheckboxEventListeners();
-populateAllListItems();
+addListItemEventListeners();
 
 function deleteItem() {
     //for delete pop up, should use modal so can style
 }
-
-
 
 /**
  * populate existing items in the listItems to the global list and DOM
@@ -139,7 +142,7 @@ function createNewListItemDOM(index) {
 
     listContainerEl.appendChild(newListItem);
 
-    addCheckboxEventListeners();
+    addListItemEventListeners();
 }
 
 /**
@@ -147,7 +150,7 @@ function createNewListItemDOM(index) {
  * when a user interacts with checkboxes (needed each time page is loaded
  * or for a new list item created)
  */
-function addCheckboxEventListeners() {
+function addListItemEventListeners() {
     for (let i = 0; i < checkbox.length; i++) {
         checkbox[i].addEventListener("click", toggleCheckbox);
         checkbox[i].addEventListener("mouseleave", function () {
@@ -158,7 +161,7 @@ function addCheckboxEventListeners() {
 
 /**
  * when the checkbox is clicked, add appropriate styles and toggle the state
- * Update the ListItem class variables to reflect count of number of tasks 
+ * Update the ListItem class variables to reflect count of number of tasks
  * completed. Check if all tasks are completed
  */
 function toggleCheckbox() {
