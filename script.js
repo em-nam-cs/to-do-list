@@ -22,6 +22,10 @@ const listItems = [
 ];
 
 class ListItem {
+
+    static numListItems = 0;
+    static numCompleted = 0;
+
     /**
      * Assume that the task is initially incomplete
      * @param {string} task text the describes the task
@@ -29,6 +33,7 @@ class ListItem {
     constructor(task) {
         this.task = task;
         this.complete = false;
+        ListItem.numListItems++;
     }
 }
 
@@ -36,10 +41,35 @@ const newItem = document.getElementById("new-item-input");
 const newItemForm = document.getElementById("new-item-form");
 const checkbox = document.getElementsByClassName("checkbox");
 const listContainerEl = document.getElementById("list-container");
+const deleteBtn = document.getElementById("delete-btn");
+const editBtn = document.getElementById("edit-btn");
 
 newItemForm.addEventListener("submit", addNewItem);
+deleteBtn.addEventListener("click", deleteItem);
 addCheckboxEventListeners();
 populateAllListItems();
+checkAllComplete();
+
+function deleteItem() {
+    //for delete pop up, should use modal so can style
+}
+
+function checkAllComplete(){
+    console.log("checking");
+    console.log(ListItem.numListItems);
+    console.log(ListItem.numCompleted);
+
+    return ListItem.numCompleted == ListItem.numListItems;
+
+    // console.log(listItems.length);
+    // let countCompleted = 0;
+    // for (let i = 0; i < listItems.length; i++) {
+    //     if (listItems[i].complete){
+    //         countCompleted++;
+    //     }
+    // }
+    // return countCompleted 
+}
 
 /**
  * populate existing items in the listItems to the DOM
@@ -64,8 +94,9 @@ function addNewItem(e) {
 
     addNewItemToList(newItem.value); //add new item to list
     createNewListItemDOM(listItems.length - 1); //add most recent item to display on DOM
-}
 
+    checkAllComplete();
+}
 
 /**
  * Creates a new ListItem object with the given task. Then adds this new item
@@ -140,4 +171,12 @@ function addCheckboxEventListeners() {
 function toggleCheckbox() {
     this.classList.toggle("checked");
     this.classList.add("clicked");
+
+    if (this.classList.contains("checked")){
+        ListItem.numCompleted++;
+        checkAllComplete();
+    } else {
+        ListItem.numCompleted--;
+        checkAllComplete();
+    }
 }
