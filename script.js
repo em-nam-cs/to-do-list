@@ -10,7 +10,7 @@
 
 console.log("RUNING Running");
 
-const listItems = [
+const populate = [
     {
         task: "TEST task 0",
         complete: false,
@@ -21,8 +21,9 @@ const listItems = [
     },
 ];
 
-class ListItem {
+const listItems = [];
 
+class ListItem {
     static numListItems = 0;
     static numCompleted = 0;
 
@@ -30,10 +31,17 @@ class ListItem {
      * Assume that the task is initially incomplete
      * @param {string} task text the describes the task
      */
-    constructor(task) {
+    constructor(task, complete) {
         this.task = task;
-        this.complete = false;
+        this.complete = complete;
+        if (complete) {
+            ListItem.numCompleted++;
+        }
         ListItem.numListItems++;
+    }
+
+    test() {
+        console.log("class method");
     }
 }
 
@@ -48,36 +56,20 @@ newItemForm.addEventListener("submit", addNewItem);
 deleteBtn.addEventListener("click", deleteItem);
 addCheckboxEventListeners();
 populateAllListItems();
-checkAllComplete();
 
 function deleteItem() {
     //for delete pop up, should use modal so can style
 }
 
-function checkAllComplete(){
-    console.log("checking");
-    console.log(ListItem.numListItems);
-    console.log(ListItem.numCompleted);
 
-    return ListItem.numCompleted == ListItem.numListItems;
-
-    // console.log(listItems.length);
-    // let countCompleted = 0;
-    // for (let i = 0; i < listItems.length; i++) {
-    //     if (listItems[i].complete){
-    //         countCompleted++;
-    //     }
-    // }
-    // return countCompleted 
-}
 
 /**
- * populate existing items in the listItems to the DOM
+ * populate existing items in the listItems to the global list and DOM
  */
 function populateAllListItems() {
-    console.log(listItems.length);
-    for (let i = 0; i < listItems.length; i++) {
-        createNewListItemDOM(i);
+    console.log("populating list items");
+    for (let i = 0; i < populate.length; i++) {
+        addNewItemToList(populate[i].task, populate[i].complete);
     }
 }
 
@@ -92,20 +84,20 @@ function addNewItem(e) {
     console.log("submit");
     console.log(newItem.value);
 
-    addNewItemToList(newItem.value); //add new item to list
-    createNewListItemDOM(listItems.length - 1); //add most recent item to display on DOM
-
-    checkAllComplete();
+    addNewItemToList(newItem.value, false); //add new item to list
 }
 
 /**
  * Creates a new ListItem object with the given task. Then adds this new item
  * to the global array of all the list items at the end of the list
+ * and creates the DOM elements to display the new list item
+ *
  * @param {string} task text that descibes the task for the list item
  */
-function addNewItemToList(task) {
-    const newListItem = new ListItem(task);
+function addNewItemToList(task, complete) {
+    const newListItem = new ListItem(task, complete);
     listItems.push(newListItem);
+    createNewListItemDOM(listItems.length - 1); //add most recent item to display on DOM
 }
 
 /**
@@ -119,7 +111,6 @@ function addNewItemToList(task) {
  */
 function createNewListItemDOM(index) {
     const itemToAdd = listItems[index];
-    console.log(itemToAdd);
 
     const newListItem = document.createElement("div");
     newListItem.classList.add("list-item");
@@ -167,16 +158,27 @@ function addCheckboxEventListeners() {
 
 /**
  * when the checkbox is clicked, add appropriate styles and toggle the state
+ * Update the ListItem class variables to reflect count of number of tasks 
+ * completed. Check if all tasks are completed
  */
 function toggleCheckbox() {
     this.classList.toggle("checked");
     this.classList.add("clicked");
 
-    if (this.classList.contains("checked")){
+    if (this.classList.contains("checked")) {
         ListItem.numCompleted++;
         checkAllComplete();
     } else {
         ListItem.numCompleted--;
-        checkAllComplete();
+        // checkAllComplete();
     }
+}
+
+/**
+ * checks if all list items are completed
+ * @returns true if the number of complete tasks matches the num of list items
+ */
+function checkAllComplete() {
+    console.log("checking");
+    return ListItem.numCompleted == ListItem.numListItems;
 }
