@@ -10,17 +10,6 @@
 
 console.log("RUNING Running");
 
-// const submitBtn = document.getElementById("submit-item-btn");
-const newItem = document.getElementById("new-item-input");
-const newItemForm = document.getElementById("new-item-form");
-const checkbox = document.getElementsByClassName("checkbox");
-const listContainerEl = document.getElementById("list-container");
-
-newItemForm.addEventListener("submit", addNewItem);
-addCheckboxEventListeners();
-
-// const listItems = [];
-
 const listItems = [
     {
         task: "TEST task 0",
@@ -32,29 +21,73 @@ const listItems = [
     },
 ];
 
-class listItem {
+class ListItem {
+    /**
+     * Assume that the task is initially incomplete
+     * @param {string} task text the describes the task
+     */
     constructor(task) {
         this.task = task;
         this.complete = false;
     }
 }
 
+const newItem = document.getElementById("new-item-input");
+const newItemForm = document.getElementById("new-item-form");
+const checkbox = document.getElementsByClassName("checkbox");
+const listContainerEl = document.getElementById("list-container");
+
+newItemForm.addEventListener("submit", addNewItem);
+addCheckboxEventListeners();
+populateAllListItems();
+
+/**
+ * populate existing items in the listItems to the DOM
+ */
+function populateAllListItems() {
+    console.log(listItems.length);
+    for (let i = 0; i < listItems.length; i++) {
+        createNewListItemDOM(i);
+    }
+}
+
+/**
+ * Creates and adds new listItem from user input form into the global list
+ * and displays it
+ *
+ * @param {event} e event that triggered event listener
+ */
 function addNewItem(e) {
     e.preventDefault();
     console.log("submit");
     console.log(newItem.value);
 
     addNewItemToList(newItem.value); //add new item to list
-    createNewListItemDOM(); //add most recent item to display on DOM
+    createNewListItemDOM(listItems.length - 1); //add most recent item to display on DOM
 }
 
+
+/**
+ * Creates a new ListItem object with the given task. Then adds this new item
+ * to the global array of all the list items at the end of the list
+ * @param {string} task text that descibes the task for the list item
+ */
 function addNewItemToList(task) {
-    const newListItem = new listItem(task);
+    const newListItem = new ListItem(task);
     listItems.push(newListItem);
 }
 
-function createNewListItemDOM() {
-    const itemToAdd = listItems[listItems.length - 1];
+/**
+ * creates all the DOM elements for a new list item and appends the html
+ * elements to the list container so the user can see the new item added
+ * Adds the event listeners to all the buttons so style and functionality to
+ * these buttons
+ *
+ * Assumes that the new list item is pushed to the back of the global listItems
+ * array and creates the new list item from this last element
+ */
+function createNewListItemDOM(index) {
+    const itemToAdd = listItems[index];
     console.log(itemToAdd);
 
     const newListItem = document.createElement("div");
@@ -87,21 +120,24 @@ function createNewListItemDOM() {
     addCheckboxEventListeners();
 }
 
+/**
+ * adds event listeners to the checkbox so the styles and marks are displayed
+ * when a user interacts with checkboxes (needed each time page is loaded
+ * or for a new list item created)
+ */
 function addCheckboxEventListeners() {
     for (let i = 0; i < checkbox.length; i++) {
         checkbox[i].addEventListener("click", toggleCheckbox);
-        checkbox[i].addEventListener("mouseleave", leaveCheckbox);
+        checkbox[i].addEventListener("mouseleave", function () {
+            this.classList.remove("clicked");
+        });
     }
 }
 
+/**
+ * when the checkbox is clicked, add appropriate styles and toggle the state
+ */
 function toggleCheckbox() {
     this.classList.toggle("checked");
     this.classList.add("clicked");
-}
-
-/**
- * consolidate this function with ()=>
- */
-function leaveCheckbox() {
-    this.classList.remove("clicked");
 }
