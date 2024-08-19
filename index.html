@@ -13,7 +13,35 @@
         <title>To Do List</title>
     </head>
     <body>
+        <div class="delete-container">
+            <div
+                id="delete-modal"
+                class="modal"
+            >
+                <p>Are you sure you want to delete</p>
+                <p>
+                    EMPTY TASK HERE Suppose there is a lot of text and the task
+                    is long
+                </p>
+                <div class="modal-btn-container">
+                    <button
+                        class="confirm-delete-btn modal-btn"
+                        id="confirm-delete-btn"
+                    >
+                        YES
+                    </button>
+                    <button
+                        class="cancel-delete-btn modal-btn"
+                        id="cancel-delete-btn"
+                    >
+                        CANCEL
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <h1>User's To Do List</h1>
+
         <form
             name="add-item"
             class="form"
@@ -47,8 +75,14 @@
             <div class="list-item">
                 <button class="checkbox checked"></button>
                 <span class="task">Test task 1</span>
-                <button class="edit-btn" id="edit-btn"></button>
-                <button class="delete-btn" id="delete-btn"></button>
+                <button
+                    class="edit-btn"
+                    id="edit-btn"
+                ></button>
+                <button
+                    class="delete-btn"
+                    id="delete-btn"
+                ></button>
             </div>
 
             <div class="list-item">
