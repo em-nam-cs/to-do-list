@@ -21,7 +21,7 @@ const populate = [
     },
 ];
 
-const listItems = [];
+const listItems = new Map();
 
 class ListItem {
     static numListItems = 0;
@@ -38,10 +38,12 @@ class ListItem {
             ListItem.numCompleted++;
         }
         ListItem.numListItems++;
+        this.id = ListItem.numListItems;
     }
 
     test() {
         console.log("class method");
+        return true;
     }
 }
 
@@ -57,31 +59,68 @@ const checkboxes = document.getElementsByClassName("checkbox");
 const editBtns = document.getElementsByClassName("edit-btn");
 const deleteBtns = document.getElementsByClassName("delete-btn");
 
-populateAllListItems();
-
 newItemForm.addEventListener("submit", addNewItem);
 cancelDeleteBtn.addEventListener("click", closeDeleteModal);
-confirmDeleteBtn.addEventListener("click", deleteItem);
+confirmDeleteBtn.addEventListener("click", () => {
+    const deleteFunc = openDeleteModal();
+    deleteFunc();
+});
+
+//attach id data to a variable, dataset
+
+function editItem() {
+    console.log("edit");
+}
+
+function test2() {
+    console.log("HELLOW");
+    function inner() {
+        console.log("BYE");
+    }
+    inner();
+}
 
 function closeDeleteModal() {
     console.log("canceled delete");
     deleteModalContainerEl.classList.add("hidden");
 }
 
-function deleteItem() {
-    console.log("item deleting");
-    deleteModalContainerEl.classList.add("hidden");
-}
-
-function openDeleteModal() {
-    //for delete pop up, should use modal so can style
+const openDeleteModal = (e) => {
     console.log("open del modal");
     deleteModalContainerEl.classList.remove("hidden");
+
+    function deleteItem() {
+        console.log("inside");
+        console.log(e);
+        //     deleteModalContainerEl.classList.add("hidden");
+        // console.log(e.originalTarget.parentElement.id);
+        // const itemId = Number(e.originalTarget.parentElement.id);
+        // console.log(listItems.get(itemId));
+    }
+
+    return deleteItem;
+};
+
+// function deleteItem(e) {
+//     console.log("item deleting");
+//     deleteModalContainerEl.classList.add("hidden");
+
+//     console.log(e);
+//     console.log(e.originalTarget.parentElement.id);
+//     const itemId = Number(e.originalTarget.parentElement.id);
+//     console.log(listItems.get(itemId));
+// }
+
+function removeListItemDOM(id) {
+    const itemToRemove = document.getElementById(id);
+    while (itemToRemove.firstChild) {
+        console.log(itemToRemove.lastChild);
+        itemToRemove.lastChild.remove();
+    }
+    // itemToRemove.remove();
 }
 
-function editItem() {
-    console.log("edit");
-}
+populateAllListItems();
 
 /**
  * populate existing items in the listItems to the global list and DOM
@@ -116,8 +155,8 @@ function addNewItem(e) {
  */
 function addNewItemToList(task, complete) {
     const newListItem = new ListItem(task, complete);
-    listItems.push(newListItem);
-    createNewListItemDOM(listItems.length - 1); //add most recent item to display on DOM
+    listItems.set(newListItem.id, newListItem);
+    createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
 }
 
 /**
@@ -126,11 +165,11 @@ function addNewItemToList(task, complete) {
  * Adds the event listeners to all the buttons so style and functionality to
  * these buttons
  *
- * Assumes that the new list item is pushed to the back of the global listItems
- * array and creates the new list item from this last element
+ * Assumes that the new list item is always added to the bottom of the list
+ *  (need this assumption in order to addEventListeners to correct buttons)
  */
-function createNewListItemDOM(index) {
-    const itemToAdd = listItems[index];
+function createNewListItemDOM(index, id) {
+    const itemToAdd = listItems.get(id);
 
     const newListItem = document.createElement("div");
     newListItem.classList.add("list-item");
@@ -157,6 +196,8 @@ function createNewListItemDOM(index) {
     newListItem.appendChild(newEditBtn);
     newListItem.appendChild(newDeleteBtn);
 
+    newListItem.setAttribute("id", id);
+
     listContainerEl.appendChild(newListItem);
 
     addListItemEventListeners(index);
@@ -176,7 +217,13 @@ function addListItemEventListeners(index) {
     });
     editBtns[index].addEventListener("click", editItem);
 
-    deleteBtns[index].addEventListener("click", openDeleteModal);
+    deleteBtns[index].addEventListener("click", (e) => {
+        const delFucnt = openDeleteModal(e);
+        delFucnt();
+        //this is not where I want to be calling the closure (delFunct), want to
+        //pass this to the confirm-delete event handler
+        //easier to store this btn's event.parent.id in a variable??
+    });
 }
 
 /**
