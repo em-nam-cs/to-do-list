@@ -49,21 +49,44 @@ const newItem = document.getElementById("new-item-input");
 const newItemForm = document.getElementById("new-item-form");
 
 const listContainerEl = document.getElementById("list-container");
+const deleteModalContainerEl = document.getElementById("delete-container");
 
-const checkbox = document.getElementsByClassName("checkbox");
-const deleteBtn = document.getElementById("delete-btn");
-const editBtn = document.getElementById("edit-btn");
+const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
+
+const checkboxes = document.getElementsByClassName("checkbox");
+const editBtns = document.getElementsByClassName("edit-btn");
+const deleteBtns = document.getElementsByClassName("delete-btn");
+//can't be by ID because multiple items
+// const deleteBtn = document.getElementById("delete-btn");
+// const editBtn = document.getElementById("edit-btn");
 
 populateAllListItems();
 
 //TODO: ISSUE WITH ADDING EVENT LISTENERS IF LIST ITEMS DON'T EXIST YET (WITHOUT PLACEHOLDER ONES
 //  TROUBLE ADDING EVENT LISTENER ON POPULATED ONES - NEED ASYNC?)
 newItemForm.addEventListener("submit", addNewItem);
-deleteBtn.addEventListener("click", deleteItem);
-addListItemEventListeners();
+cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+confirmDeleteBtn.addEventListener("click", deleteItem);
+
+function closeDeleteModal() {
+    console.log("canceled delete");
+    deleteModalContainerEl.classList.add("hidden");
+}
 
 function deleteItem() {
+    console.log("item deleting");
+    deleteModalContainerEl.classList.add("hidden");
+}
+
+function openDeleteModal() {
     //for delete pop up, should use modal so can style
+    console.log("open del modal");
+    deleteModalContainerEl.classList.remove("hidden");
+}
+
+function editItem() {
+    console.log("edit");
 }
 
 /**
@@ -72,6 +95,7 @@ function deleteItem() {
 function populateAllListItems() {
     console.log("populating list items");
     for (let i = 0; i < populate.length; i++) {
+        console.log(`pop item: ${i}`);
         addNewItemToList(populate[i].task, populate[i].complete);
     }
 }
@@ -142,7 +166,7 @@ function createNewListItemDOM(index) {
 
     listContainerEl.appendChild(newListItem);
 
-    addListItemEventListeners();
+    addListItemEventListeners(index);
 }
 
 /**
@@ -150,13 +174,24 @@ function createNewListItemDOM(index) {
  * when a user interacts with checkboxes (needed each time page is loaded
  * or for a new list item created)
  */
-function addListItemEventListeners() {
-    for (let i = 0; i < checkbox.length; i++) {
-        checkbox[i].addEventListener("click", toggleCheckbox);
-        checkbox[i].addEventListener("mouseleave", function () {
-            this.classList.remove("clicked");
-        });
-    }
+function addListItemEventListeners(index) {
+    console.log("adding event listener:");
+    console.log(index);
+    console.log(checkboxes);
+    // for (let i = 0; i < checkboxes.length; i++) {
+    //     checkboxse[i].addEventListener("click", toggleCheckbox);
+    //     checkboxse[i].addEventListener("mouseleave", function () {
+    //         this.classList.remove("clicked");
+    //     });
+    // }
+
+    checkboxes[index].addEventListener("click", toggleCheckbox);
+    checkboxes[index].addEventListener("mouseleave", function () {
+        this.classList.remove("clicked");
+    });
+    editBtns[index].addEventListener("click", editItem);
+
+    deleteBtns[index].addEventListener("click", openDeleteModal);
 }
 
 /**
@@ -173,7 +208,6 @@ function toggleCheckbox() {
         checkAllComplete();
     } else {
         ListItem.numCompleted--;
-        // checkAllComplete();
     }
 }
 
@@ -182,6 +216,6 @@ function toggleCheckbox() {
  * @returns true if the number of complete tasks matches the num of list items
  */
 function checkAllComplete() {
-    console.log("checking");
+    console.log("checking if all complete");
     return ListItem.numCompleted == ListItem.numListItems;
 }
