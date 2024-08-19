@@ -10,11 +10,11 @@
 
     --form-height: 3rem;
     --form-radius: 10px;
-    --form-color: #e0b8b9;
+    --accent-color: #e0b8b9;
 
-    --form-color: #bab0bf;
+    --accent-color:#bab0bf;
 
-    --accent-color: #5b8266;
+    /* --accent-color: #5b8266; */
 
     --list-item-height: 1.5rem;
     --checkbox-color: #92bb77;
@@ -47,7 +47,7 @@ h1 {
 }
 
 .form > * {
-    background-color: var(--form-color);
+    background-color: var(--accent-color);
 }
 
 .new-item-input {
@@ -81,6 +81,14 @@ h1 {
     font-weight: bolder;
 }
 
+.submit-item-btn:hover{
+        background-color: color-mix(
+        in srgb,
+        var(--accent-color),
+        black 20%
+    );
+}
+
 hr {
     height: 3px;
     background-color: var(--page-text-color);
@@ -98,7 +106,7 @@ hr {
 
     height: 75vh;
     overflow: scroll;
-    scrollbar-color: var(--form-color) transparent;
+    scrollbar-color: var(--accent-color) transparent;
 }
 
 @media (height <= 690px) and (height > 540px) {
@@ -199,7 +207,7 @@ hr {
 .modal {
     --modal-width: 50vw;
     border: 3px var(--page-text-color) solid;
-    background-color: var(--form-color);
+    background-color: var(--accent-color);
     opacity: 1;
 
     padding: 20px;
@@ -216,6 +224,14 @@ hr {
 .modal-btn {
     width: auto;
     min-width: calc(var(--modal-width) / 3);
+}
+
+.modal-btn:hover {
+    background-color: color-mix(
+        in srgb,
+        var(--accent-color),
+        black 20%
+    );
 }
 
 .hidden {

@@ -47,24 +47,18 @@ class ListItem {
 
 const newItem = document.getElementById("new-item-input");
 const newItemForm = document.getElementById("new-item-form");
-
 const listContainerEl = document.getElementById("list-container");
-const deleteModalContainerEl = document.getElementById("delete-container");
 
+const deleteModalContainerEl = document.getElementById("delete-container");
 const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
 const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
 
 const checkboxes = document.getElementsByClassName("checkbox");
 const editBtns = document.getElementsByClassName("edit-btn");
 const deleteBtns = document.getElementsByClassName("delete-btn");
-//can't be by ID because multiple items
-// const deleteBtn = document.getElementById("delete-btn");
-// const editBtn = document.getElementById("edit-btn");
 
 populateAllListItems();
 
-//TODO: ISSUE WITH ADDING EVENT LISTENERS IF LIST ITEMS DON'T EXIST YET (WITHOUT PLACEHOLDER ONES
-//  TROUBLE ADDING EVENT LISTENER ON POPULATED ONES - NEED ASYNC?)
 newItemForm.addEventListener("submit", addNewItem);
 cancelDeleteBtn.addEventListener("click", closeDeleteModal);
 confirmDeleteBtn.addEventListener("click", deleteItem);
@@ -95,7 +89,6 @@ function editItem() {
 function populateAllListItems() {
     console.log("populating list items");
     for (let i = 0; i < populate.length; i++) {
-        console.log(`pop item: ${i}`);
         addNewItemToList(populate[i].task, populate[i].complete);
     }
 }
@@ -176,14 +169,6 @@ function createNewListItemDOM(index) {
  */
 function addListItemEventListeners(index) {
     console.log("adding event listener:");
-    console.log(index);
-    console.log(checkboxes);
-    // for (let i = 0; i < checkboxes.length; i++) {
-    //     checkboxse[i].addEventListener("click", toggleCheckbox);
-    //     checkboxse[i].addEventListener("mouseleave", function () {
-    //         this.classList.remove("clicked");
-    //     });
-    // }
 
     checkboxes[index].addEventListener("click", toggleCheckbox);
     checkboxes[index].addEventListener("mouseleave", function () {
