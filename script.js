@@ -61,55 +61,36 @@ const deleteBtns = document.getElementsByClassName("delete-btn");
 
 newItemForm.addEventListener("submit", addNewItem);
 cancelDeleteBtn.addEventListener("click", closeDeleteModal);
-confirmDeleteBtn.addEventListener("click", () => {
-    const deleteFunc = openDeleteModal();
-    deleteFunc();
-});
-
-//attach id data to a variable, dataset
+confirmDeleteBtn.addEventListener("click", deleteItem);
 
 function editItem() {
     console.log("edit");
 }
 
-function test2() {
-    console.log("HELLOW");
-    function inner() {
-        console.log("BYE");
-    }
-    inner();
-}
 
+//TODO, also call this if user clicks outside modal
 function closeDeleteModal() {
     console.log("canceled delete");
     deleteModalContainerEl.classList.add("hidden");
 }
 
-const openDeleteModal = (e) => {
+function openDeleteModal(e) {
     console.log("open del modal");
     deleteModalContainerEl.classList.remove("hidden");
+    
+    const itemId = e.originalTarget.parentElement.id; //id of which list item opened delete popup
+    deleteModalContainerEl.setAttribute("data-id", itemId);
+}
 
-    function deleteItem() {
-        console.log("inside");
-        console.log(e);
-        //     deleteModalContainerEl.classList.add("hidden");
-        // console.log(e.originalTarget.parentElement.id);
-        // const itemId = Number(e.originalTarget.parentElement.id);
-        // console.log(listItems.get(itemId));
-    }
+function deleteItem() {
+    console.log("item deleting");
+    deleteModalContainerEl.classList.add("hidden");
+    console.log(deleteModalContainerEl.getAttribute("data-id"));
+    const itemId = deleteModalContainerEl.getAttribute("data-id");
+    // console.log(typeof itemId);
+    console.log(listItems.get(Number(itemId)));
 
-    return deleteItem;
-};
-
-// function deleteItem(e) {
-//     console.log("item deleting");
-//     deleteModalContainerEl.classList.add("hidden");
-
-//     console.log(e);
-//     console.log(e.originalTarget.parentElement.id);
-//     const itemId = Number(e.originalTarget.parentElement.id);
-//     console.log(listItems.get(itemId));
-// }
+}
 
 function removeListItemDOM(id) {
     const itemToRemove = document.getElementById(id);
@@ -218,11 +199,7 @@ function addListItemEventListeners(index) {
     editBtns[index].addEventListener("click", editItem);
 
     deleteBtns[index].addEventListener("click", (e) => {
-        const delFucnt = openDeleteModal(e);
-        delFucnt();
-        //this is not where I want to be calling the closure (delFunct), want to
-        //pass this to the confirm-delete event handler
-        //easier to store this btn's event.parent.id in a variable??
+        openDeleteModal(e);
     });
 }
 
