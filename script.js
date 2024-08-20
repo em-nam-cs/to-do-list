@@ -26,6 +26,7 @@ const listItems = new Map();
 class ListItem {
     static numListItems = 0;
     static numCompleted = 0;
+    static idCounter = 0;
 
     /**
      * Assume that the task is initially incomplete
@@ -38,11 +39,12 @@ class ListItem {
             ListItem.numCompleted++;
         }
         ListItem.numListItems++;
+        ListItem.idCounter++;
 
         //ISSUE IF delete item, then create it can have duplicate id (because
         //at time of creation the numItems is the same)
 
-        this.id = ListItem.numListItems;
+        this.id = ListItem.idCounter;
     }
 
     deleteItem() {
@@ -156,6 +158,10 @@ function addNewItemToList(task, complete) {
     const newListItem = new ListItem(task, complete);
     listItems.set(newListItem.id, newListItem);
     createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
+    /**
+     * Assumes that the new list item is always added to the bottom of the list
+     * (need this assumption in order to addEventListeners to correct buttons)
+     */
 }
 
 /**
@@ -163,9 +169,6 @@ function addNewItemToList(task, complete) {
  * elements to the list container so the user can see the new item added
  * Adds the event listeners to all the buttons so style and functionality to
  * these buttons
- *
- * Assumes that the new list item is always added to the bottom of the list
- *  (need this assumption in order to addEventListeners to correct buttons)
  */
 function createNewListItemDOM(index, id) {
     const itemToAdd = listItems.get(id);
