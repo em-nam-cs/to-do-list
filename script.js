@@ -38,7 +38,19 @@ class ListItem {
             ListItem.numCompleted++;
         }
         ListItem.numListItems++;
+
+        //ISSUE IF delete item, then create it can have duplicate id (because
+        //at time of creation the numItems is the same)
+
         this.id = ListItem.numListItems;
+    }
+
+    deleteItem() {
+        ListItem.numListItems--;
+        if (this.complete) {
+            ListItem.numCompleted--;
+        }
+        listItems.delete(this.id);
     }
 
     test() {
@@ -67,7 +79,6 @@ function editItem() {
     console.log("edit");
 }
 
-
 //TODO, also call this if user clicks outside modal
 function closeDeleteModal() {
     console.log("canceled delete");
@@ -77,28 +88,35 @@ function closeDeleteModal() {
 function openDeleteModal(e) {
     console.log("open del modal");
     deleteModalContainerEl.classList.remove("hidden");
-    
-    const itemId = e.originalTarget.parentElement.id; //id of which list item opened delete popup
+
+    const itemId = e.target.parentElement.id; //id of which list item opened delete popup
     deleteModalContainerEl.setAttribute("data-id", itemId);
 }
 
 function deleteItem() {
     console.log("item deleting");
-    deleteModalContainerEl.classList.add("hidden");
-    console.log(deleteModalContainerEl.getAttribute("data-id"));
-    const itemId = deleteModalContainerEl.getAttribute("data-id");
-    // console.log(typeof itemId);
-    console.log(listItems.get(Number(itemId)));
+    // console.log("list items map before:");
+    // console.log(listItems);
 
+    deleteModalContainerEl.classList.add("hidden");
+    // console.log(deleteModalContainerEl.getAttribute("data-id"));
+    const itemId = Number(deleteModalContainerEl.getAttribute("data-id"));
+    // console.log(listItems.get(itemId));
+
+    //need to remove from listItems map
+    listItems.get(itemId).deleteItem();
+
+    //need to remove from DOM
+    deleteListItemDOM(itemId);
 }
 
-function removeListItemDOM(id) {
-    const itemToRemove = document.getElementById(id);
-    while (itemToRemove.firstChild) {
-        console.log(itemToRemove.lastChild);
-        itemToRemove.lastChild.remove();
-    }
-    // itemToRemove.remove();
+function deleteListItemDOM(id) {
+    console.log("delete from DOM");
+    const itemToDelete = document.getElementById(id);
+
+    // itemToDelete.outerHTML = itemToDelete.outerHTML;
+    itemToDelete.outerHTML = null; //remove event handlers (does this even safely remove handlers??)
+    itemToDelete.remove();
 }
 
 populateAllListItems();
@@ -205,14 +223,17 @@ function addListItemEventListeners(index) {
 
 /**
  * when the checkbox is clicked, add appropriate styles and toggle the state
- * Update the ListItem class variables to reflect count of number of tasks
+ * Update the ListItem class and instance variables to reflect count of number of tasks
  * completed. Check if all tasks are completed
  */
 function toggleCheckbox() {
     this.classList.toggle("checked");
     this.classList.add("clicked");
+    const itemId = Number(this.parentElement.id);
+    const completed = this.classList.contains("checked");
+    listItems.get(itemId).complete = completed;
 
-    if (this.classList.contains("checked")) {
+    if (completed) {
         ListItem.numCompleted++;
         checkAllComplete();
     } else {
