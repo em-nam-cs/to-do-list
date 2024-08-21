@@ -223,6 +223,9 @@ hr {
 .modal-btn {
     width: auto;
     min-width: calc(var(--modal-width) / 3);
+    height: auto;
+    margin: 5px 0px;
+    padding: 5px 0px;
 }
 
 .modal-btn:hover {
