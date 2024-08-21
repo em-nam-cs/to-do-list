@@ -66,6 +66,7 @@ const newItemForm = document.getElementById("new-item-form");
 const listContainerEl = document.getElementById("list-container");
 
 const deleteModalContainerEl = document.getElementById("delete-container");
+const deleteModalEl = document.getElementById("delete-modal");
 const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
 const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
 
@@ -74,14 +75,18 @@ const editBtns = document.getElementsByClassName("edit-btn");
 const deleteBtns = document.getElementsByClassName("delete-btn");
 
 newItemForm.addEventListener("submit", addNewItem);
-cancelDeleteBtn.addEventListener("click", closeDeleteModal);
 confirmDeleteBtn.addEventListener("click", deleteItem);
+cancelDeleteBtn.addEventListener("click", closeDeleteModal);
+deleteModalContainerEl.addEventListener("click", (e) => {
+    if (!deleteModalEl.contains(e.target)) {
+        closeDeleteModal();
+    }
+});
 
 function editItem() {
     console.log("edit");
 }
 
-//TODO, also call this if user clicks outside modal
 function closeDeleteModal() {
     console.log("canceled delete");
     deleteModalContainerEl.classList.add("hidden");
