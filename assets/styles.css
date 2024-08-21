@@ -12,7 +12,7 @@
     --form-radius: 10px;
     --accent-color: #e0b8b9;
 
-    --accent-color:#bab0bf;
+    --accent-color: #bab0bf;
 
     /* --accent-color: #5b8266; */
 
@@ -81,12 +81,8 @@ h1 {
     font-weight: bolder;
 }
 
-.submit-item-btn:hover{
-        background-color: color-mix(
-        in srgb,
-        var(--accent-color),
-        black 20%
-    );
+.submit-item-btn:hover {
+    background-color: color-mix(in srgb, var(--accent-color), black 20%);
 }
 
 hr {
@@ -202,6 +198,8 @@ hr {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    cursor: pointer;
 }
 
 .modal {
@@ -212,6 +210,7 @@ hr {
 
     padding: 20px;
 
+    cursor: default;
     width: var(--modal-width);
 }
 
@@ -227,11 +226,7 @@ hr {
 }
 
 .modal-btn:hover {
-    background-color: color-mix(
-        in srgb,
-        var(--accent-color),
-        black 20%
-    );
+    background-color: color-mix(in srgb, var(--accent-color), black 20%);
 }
 
 .hidden {
