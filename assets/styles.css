@@ -228,9 +228,18 @@ hr {
     padding: 5px 0px;
 }
 
-.modal-btn:hover {
+.modal-btn:hover, .modal-btn:focus {
     background-color: color-mix(in srgb, var(--accent-color), black 20%);
+    outline: none;
 }
+
+/* #confirm-delete-btn:focus, #confirm-delete-btn:hover{
+    background-color: #92bb77;
+} */
+
+/* #delete-modal:focus{
+    background-color: #92bb77;
+} */
 
 .hidden {
     display: none;

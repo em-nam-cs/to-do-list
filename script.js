@@ -73,6 +73,7 @@ const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
 const checkboxes = document.getElementsByClassName("checkbox");
 const editBtns = document.getElementsByClassName("edit-btn");
 const deleteBtns = document.getElementsByClassName("delete-btn");
+const deleteModalTaskText = document.getElementById("delete-modal-task-text");
 
 newItemForm.addEventListener("submit", addNewItem);
 confirmDeleteBtn.addEventListener("click", deleteItem);
@@ -82,22 +83,46 @@ deleteModalContainerEl.addEventListener("click", (e) => {
         closeDeleteModal();
     }
 });
+deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
 
 function editItem() {
     console.log("edit");
 }
 
+/**
+ * clears the focus off the confirm delete button that it is initially set to
+ * when opening the delete modal
+ */
+function removeDeleteBtnFocus() {
+    console.log("moving focus");
+    setTimeout(() => {
+        confirmDeleteBtn.blur();
+    }, 0);
+}
+
+/**
+ * closes the delete modal display
+ */
 function closeDeleteModal() {
     console.log("canceled delete");
     deleteModalContainerEl.classList.add("hidden");
 }
 
+/**
+ * opens the delete modal display automatically focuses on the confirm delete btn,
+ * stores which item triggered the delete and stores this data in html data attribute
+ * @param {*} e event that triggered the delete (can extract item id to delete)
+ */
 function openDeleteModal(e) {
     console.log("open del modal");
     deleteModalContainerEl.classList.remove("hidden");
+    setTimeout(() => {
+        confirmDeleteBtn.focus({ focusVisible: true }); //set focus automatically on confirm delete
+    }, 0);
 
-    const itemId = e.target.parentElement.id; //id of which list item opened delete popup
-    deleteModalContainerEl.setAttribute("data-id", itemId);
+    const itemId = Number(e.target.parentElement.id); //id of which list item opened delete popup
+    deleteModalTaskText.innerText = (listItems.get(itemId)).task; //set delete modal text prompt
+    deleteModalContainerEl.setAttribute("data-id", itemId); //store the id
 }
 
 function deleteItem() {
