@@ -63,7 +63,7 @@ class ListItem {
     }
 }
 
-const newItem = document.getElementById("new-item-input");
+const newItemInput = document.getElementById("new-item-input");
 const newItemForm = document.getElementById("new-item-form");
 const listContainerEl = document.getElementById("list-container");
 
@@ -182,10 +182,13 @@ function populateAllListItems() {
 function addNewItem(e) {
     e.preventDefault();
     console.log("submit");
-    console.log(newItem.value);
+    console.log(e);
+    console.log(newItemInput.value);
 
-    const newListItem = addNewItemToList(newItem.value, false); //add new item to list
+    const newListItem = addNewItemToList(newItemInput.value, false); //add new item to list
     createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
+
+    newItemInput.value = "";
     /**
      * Assumes that the new list item is always added to the bottom of the list
      * (need this assumption in order to addEventListeners to correct buttons)
