@@ -176,6 +176,11 @@ function populateAllListItems() {
 /**
  * Creates and adds new listItem from user input form into the global list
  * and displays it, and creates the DOM elements to display the new list item
+ *  
+ * Assumes that the new list item is always added to the bottom of the list
+ * (need this assumption in order to addEventListeners to correct buttons and
+ *  to scroll to newest added item)
+
  *
  * @param {event} e event that triggered event listener
  */
@@ -190,10 +195,7 @@ function addNewItem(e) {
 
     newItemInput.value = "";
     listContainerEl.scroll(0, 500);
-    /**
-     * Assumes that the new list item is always added to the bottom of the list
-     * (need this assumption in order to addEventListeners to correct buttons)
-     */
+
 }
 
 /**
