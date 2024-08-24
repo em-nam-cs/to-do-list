@@ -8,6 +8,8 @@
 
  */
 
+//RECALL: when CRUD, need to update STORAGE AND DOM
+
 console.log("RUNING Running");
 
 const populate = [
@@ -121,10 +123,14 @@ function openDeleteModal(e) {
     }, 0);
 
     const itemId = Number(e.target.parentElement.id); //id of which list item opened delete popup
-    deleteModalTaskText.innerText = (listItems.get(itemId)).task; //set delete modal text prompt
+    deleteModalTaskText.innerText = listItems.get(itemId).task; //set delete modal text prompt
     deleteModalContainerEl.setAttribute("data-id", itemId); //store the id
 }
 
+/**
+ * delete a list item from the Map storage and remove its corresponding HTML
+ * display from the DOM. Also close the delete modal popup
+ */
 function deleteItem() {
     console.log("item deleting");
     // console.log("list items map before:");
@@ -151,7 +157,7 @@ function deleteListItemDOM(id) {
     itemToDelete.remove();
 }
 
-populateAllListItems();
+populateAllListItems(); //populate items (WRAP IN ON LOAD???)
 
 /**
  * populate existing items in the listItems to the global list and DOM
@@ -159,13 +165,17 @@ populateAllListItems();
 function populateAllListItems() {
     console.log("populating list items");
     for (let i = 0; i < populate.length; i++) {
-        addNewItemToList(populate[i].task, populate[i].complete);
+        const newListItem = addNewItemToList(
+            populate[i].task,
+            populate[i].complete
+        );
+        createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
     }
 }
 
 /**
  * Creates and adds new listItem from user input form into the global list
- * and displays it
+ * and displays it, and creates the DOM elements to display the new list item
  *
  * @param {event} e event that triggered event listener
  */
@@ -174,24 +184,26 @@ function addNewItem(e) {
     console.log("submit");
     console.log(newItem.value);
 
-    addNewItemToList(newItem.value, false); //add new item to list
-}
-
-/**
- * Creates a new ListItem object with the given task. Then adds this new item
- * to the global array of all the list items at the end of the list
- * and creates the DOM elements to display the new list item
- *
- * @param {string} task text that descibes the task for the list item
- */
-function addNewItemToList(task, complete) {
-    const newListItem = new ListItem(task, complete);
-    listItems.set(newListItem.id, newListItem);
+    const newListItem = addNewItemToList(newItem.value, false); //add new item to list
     createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
     /**
      * Assumes that the new list item is always added to the bottom of the list
      * (need this assumption in order to addEventListeners to correct buttons)
      */
+}
+
+/**
+ * Creates a new ListItem object with the given task. Then adds this new item
+ * to the global array of all the list items at the end of the list
+ *
+ * @param {string} task text that descibes the task for the list item
+ * @param {boolean} complete boolean that is true if task is complete, false otherwise
+ * @return {ListItem} ListItem object of the new item added to the storage list
+ */
+function addNewItemToList(task, complete) {
+    const newListItem = new ListItem(task, complete);
+    listItems.set(newListItem.id, newListItem);
+    return newListItem;
 }
 
 /**
