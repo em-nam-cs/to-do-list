@@ -189,6 +189,7 @@ function addNewItem(e) {
     createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
 
     newItemInput.value = "";
+    listContainerEl.scroll(0, 500);
     /**
      * Assumes that the new list item is always added to the bottom of the list
      * (need this assumption in order to addEventListeners to correct buttons)
