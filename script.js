@@ -22,7 +22,7 @@ const populate = [
         complete: true,
     },
 ];
-
+const HTML_INDEX_OF_TASK = 1;
 const listItems = new Map();
 
 class ListItem {
@@ -87,8 +87,43 @@ deleteModalContainerEl.addEventListener("click", (e) => {
 });
 deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
 
-function editItem() {
+function editItem(e) {
     console.log("edit");
+    //need to edit storage and DOM
+    console.log(e.target.parentElement.id);
+    const itemId = Number(e.target.parentElement.id);
+    const parent = e.target.parentElement;
+    console.log(e.target.parentElement.children[HTML_INDEX_OF_TASK]);
+    const taskElement = e.target.parentElement.children[HTML_INDEX_OF_TASK];
+    const task = listItems.get(itemId).task;
+    console.log(task);
+
+    console.log(taskElement.clientHeight)
+
+    const height = taskElement.clientHeight + "px";
+    console.log(height);
+
+    const taskEditEl = document.createElement("textarea");
+    taskEditEl.value = task;
+    taskEditEl.classList.add("task");
+    // taskEditEl.style.height = height;
+    taskEditEl.addEventListener("input", (e) => {
+        console.log(e.target)
+        autoSizeEdit(e.target);
+    })
+        
+    parent.insertBefore(taskEditEl, taskElement);
+
+    taskElement.remove();
+    autoSizeEdit(taskEditEl);
+}
+
+function autoSizeEdit(element) {
+    console.log(element);
+    element.style.height = "auto";
+    let currPadding = getComputedStyle(element).getPropertyValue("padding");
+    currPadding = Number(currPadding.replace(/\D/g, ""));
+    element.style.height = (element.scrollHeight + currPadding) + "px";
 }
 
 /**
@@ -195,7 +230,6 @@ function addNewItem(e) {
 
     newItemInput.value = "";
     listContainerEl.scroll(0, 500);
-
 }
 
 /**
@@ -265,7 +299,9 @@ function addListItemEventListeners(index) {
     checkboxes[index].addEventListener("mouseleave", function () {
         this.classList.remove("clicked");
     });
-    editBtns[index].addEventListener("click", editItem);
+    editBtns[index].addEventListener("click", (e) => {
+        editItem(e);
+    });
 
     deleteBtns[index].addEventListener("click", (e) => {
         openDeleteModal(e);

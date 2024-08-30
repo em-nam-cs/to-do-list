@@ -137,6 +137,13 @@ hr {
     font-size: large;
     width: 90%;
     padding: 0px 5px;
+    background-color: transparent;
+}
+
+textarea.task{
+    border: 2px var(--accent-color) solid;
+    outline: none;
+    padding: 5px;
 }
 
 .modal-btn,
@@ -228,7 +235,8 @@ hr {
     padding: 5px 0px;
 }
 
-.modal-btn:hover, .modal-btn:focus {
+.modal-btn:hover,
+.modal-btn:focus {
     background-color: color-mix(in srgb, var(--accent-color), black 20%);
     outline: none;
 }
