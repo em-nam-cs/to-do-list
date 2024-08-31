@@ -87,43 +87,79 @@ deleteModalContainerEl.addEventListener("click", (e) => {
 });
 deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
 
-function editItem(e) {
+function openEditItem(e) {
     console.log("edit");
     //need to edit storage and DOM
-    console.log(e.target.parentElement.id);
+    // console.log(e.target.parentElement.id);
     const itemId = Number(e.target.parentElement.id);
-    const parent = e.target.parentElement;
-    console.log(e.target.parentElement.children[HTML_INDEX_OF_TASK]);
-    const taskElement = e.target.parentElement.children[HTML_INDEX_OF_TASK];
     const task = listItems.get(itemId).task;
-    console.log(task);
 
-    console.log(taskElement.clientHeight)
+    const parent = e.target.parentElement;
+    // console.log(e.target.parentElement.children[HTML_INDEX_OF_TASK]);
+    const taskEl = e.target.parentElement.children[HTML_INDEX_OF_TASK];
 
-    const height = taskElement.clientHeight + "px";
-    console.log(height);
+    // console.log(taskEl);
 
     const taskEditEl = document.createElement("textarea");
     taskEditEl.value = task;
     taskEditEl.classList.add("task");
-    // taskEditEl.style.height = height;
-    taskEditEl.addEventListener("input", (e) => {
-        console.log(e.target)
-        autoSizeEdit(e.target);
-    })
-        
-    parent.insertBefore(taskEditEl, taskElement);
 
-    taskElement.remove();
+    parent.insertBefore(taskEditEl, taskEl);
+
+    taskEl.remove();
     autoSizeEdit(taskEditEl);
+    taskEditEl.focus();
+
+    e.target.classList.add("edit-open");
+
+    taskEditEl.addEventListener("input", (e) => {
+        autoSizeEdit(e.target);
+    });
+    taskEditEl.addEventListener("keypress", (e) => {
+        // console.log(e.key);
+        if (e.key === "Enter") {
+            e.preventDefault();
+            finalizeEdit(e, itemId);
+        }
+    });
+}
+
+//update task in storage and DOM
+function finalizeEdit(e, itemId) {
+    console.log("finalize edit");
+    console.log(e.target);
+    console.log(itemId);
+
+    const parent = e.target.parentElement;
+
+    const updatedTask = e.target.value;
+
+    //update in storage
+    const itemToUpdate = listItems.get(Number(itemId));
+    itemToUpdate.task = updatedTask;
+
+    //switch back to span, update task in DOM
+    const updatedTaskEl = document.createElement("span");
+    updatedTaskEl.innerText = updatedTask;
+    updatedTaskEl.classList.add("task");
+    parent.insertBefore(updatedTaskEl, e.target);
+
+    //remove event handlers, remove textarea
+    let clone = e.target.cloneNode(false);
+    e.target.replaceWith(clone);
+    clone.remove();
+
+    e.target.classList.remove("edit-open");
+
+    //call this function when click the edit button again?
 }
 
 function autoSizeEdit(element) {
-    console.log(element);
+    // console.log(element);
     element.style.height = "auto";
     let currPadding = getComputedStyle(element).getPropertyValue("padding");
     currPadding = Number(currPadding.replace(/\D/g, ""));
-    element.style.height = (element.scrollHeight + currPadding) + "px";
+    element.style.height = element.scrollHeight + currPadding + "px";
 }
 
 /**
@@ -300,7 +336,14 @@ function addListItemEventListeners(index) {
         this.classList.remove("clicked");
     });
     editBtns[index].addEventListener("click", (e) => {
-        editItem(e);
+        // editBtns[index].classList.contains("edit-open")
+        // if (e.target.classList.contains("edit-open")) {
+            // console.log(e.target.parentElement.id);
+            // finalizeEdit(e, e.target.parentElement.id);
+        // } else {
+            // console.log("NOT OPEN SO OPEN");
+            openEditItem(e);
+        // }
     });
 
     deleteBtns[index].addEventListener("click", (e) => {
