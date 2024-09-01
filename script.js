@@ -87,11 +87,11 @@ deleteModalContainerEl.addEventListener("click", (e) => {
     }
 });
 
-//open edit if click on span
 //close edit textarea if click outside textarea
+//something like this, but issue textarea dyno generated
 
 // document.body.addEventListener("click", (e) => {
-//     if (!document.body.contains(e.target)){
+//     if (!taskTextareaEl.contains(e.target)){
 //         finalizeEdit();
 //     }
 // });
@@ -114,17 +114,16 @@ function openEditItem(listItem) {
 
     listItemEl.insertBefore(taskEditEl, taskEl);
 
-    taskEl.remove();
+    //remove event handlers from task span, remove span
+    let clone = taskEl.cloneNode(false);
+    taskEl.replaceWith(clone);
+    clone.remove();
+
     autoSizeEdit(taskEditEl);
     taskEditEl.focus();
 
     //add class to mark edit is open
     listItemEl.classList.add("edit-open");
-
-    //remove event handlers from task span, remove span
-    let clone = taskEl.cloneNode(false);
-    taskEl.replaceWith(clone);
-    clone.remove();
 
     //add event listeners to textarea to resize and entering final edit
     taskEditEl.addEventListener("input", (e) => {
@@ -137,8 +136,6 @@ function openEditItem(listItem) {
             finalizeEdit(e.target, itemId);
         }
     });
-
-    // console.log(e.target.classList);
 }
 
 //update task in storage and DOM
