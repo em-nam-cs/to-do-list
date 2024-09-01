@@ -118,25 +118,26 @@ function openEditItem(e) {
         // console.log(e.key);
         if (e.key === "Enter") {
             e.preventDefault();
-            finalizeEdit(e, itemId);
+            finalizeEdit(e.target, itemId);
         }
     });
     // console.log(e.target.classList);
 }
 
 //update task in storage and DOM
-function finalizeEdit(e, itemId) {
+//don't need entire event, just need the right DOM element to edit
+function finalizeEdit(taskEl, itemId) {
     console.log("finalize edit");
-    console.log(e.target);
-    console.log(itemId);
 
-    console.log(e.target.classList);
+    console.log(taskEl);
+    // console.log(e.target);
+    console.log(itemId);
     
 
-    const listItemEl = e.target.parentElement;
+    const listItemEl = taskEl.parentElement;
     listItemEl.classList.remove("edit-open");
 
-    const updatedTask = e.target.value;
+    const updatedTask = taskEl.value;
 
     //update in storage
     const itemToUpdate = listItems.get(Number(itemId));
@@ -146,11 +147,11 @@ function finalizeEdit(e, itemId) {
     const updatedTaskEl = document.createElement("span");
     updatedTaskEl.innerText = updatedTask;
     updatedTaskEl.classList.add("task");
-    listItemEl.insertBefore(updatedTaskEl, e.target);
+    listItemEl.insertBefore(updatedTaskEl, taskEl);
 
     //remove event handlers, remove textarea
-    let clone = e.target.cloneNode(false);
-    e.target.replaceWith(clone);
+    let clone = taskEl.cloneNode(false);
+    taskEl.replaceWith(clone);
     clone.remove();
 
     //call this function when click the edit button again?
@@ -267,7 +268,7 @@ function addNewItem(e) {
     createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
 
     newItemInput.value = "";
-    listContainerEl.scroll(0, 500);
+    listContainerEl.scroll(0, 500); //500 just big enough to always be bottom
 }
 
 /**
@@ -339,14 +340,15 @@ function addListItemEventListeners(index) {
     });
     editBtns[index].addEventListener("click", (e) => {
         // editBtns[index].classList.contains("edit-open")
-        console.log(e.target.parentElement.classList.contains("edit-open"));
-        // if (e.target.classList.contains("edit-open")) {
-            // console.log(e.target.parentElement.id);
-            // finalizeEdit(e, e.target.parentElement.id);
-        // } else {
+        const listItemEl = e.target.parentElement;
+        // console.log(listItemEl.classList.contains("edit-open"));
+        if (listItemEl.classList.contains("edit-open")) {
+            const taskEl = listItemEl.children[HTML_INDEX_OF_TASK];
+            finalizeEdit(taskEl, listItemEl.id);
+        } else {
             // console.log("NOT OPEN SO OPEN");
             openEditItem(e);
-        // }
+        }
     });
 
     deleteBtns[index].addEventListener("click", (e) => {
