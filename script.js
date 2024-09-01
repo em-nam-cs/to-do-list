@@ -73,6 +73,7 @@ const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
 const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
 
 const checkboxes = document.getElementsByClassName("checkbox");
+const tasks = document.getElementsByClassName("task");
 const editBtns = document.getElementsByClassName("edit-btn");
 const deleteBtns = document.getElementsByClassName("delete-btn");
 const deleteModalTaskText = document.getElementById("delete-modal-task-text");
@@ -85,13 +86,23 @@ deleteModalContainerEl.addEventListener("click", (e) => {
         closeDeleteModal();
     }
 });
+
+//open edit if click on span
+//close edit textarea if click outside textarea
+
+// document.body.addEventListener("click", (e) => {
+//     if (!document.body.contains(e.target)){
+//         finalizeEdit();
+//     }
+// });
+
 deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
 
 //opens edit mode
-function openEditItem(e) {
+function openEditItem(listItem) {
     console.log("edit");
     // console.log(e.target.parentElement.id);
-    const listItemEl = e.target.parentElement;
+    const listItemEl = listItem;
     const taskEl = listItemEl.children[HTML_INDEX_OF_TASK];
     const itemId = Number(listItemEl.id);
     const task = listItems.get(itemId).task;
@@ -110,7 +121,12 @@ function openEditItem(e) {
     //add class to mark edit is open
     listItemEl.classList.add("edit-open");
 
-    //add event listeners to resize and entering final edit
+    //remove event handlers from task span, remove span
+    let clone = taskEl.cloneNode(false);
+    taskEl.replaceWith(clone);
+    clone.remove();
+
+    //add event listeners to textarea to resize and entering final edit
     taskEditEl.addEventListener("input", (e) => {
         autoSizeEdit(e.target);
     });
@@ -121,6 +137,7 @@ function openEditItem(e) {
             finalizeEdit(e.target, itemId);
         }
     });
+
     // console.log(e.target.classList);
 }
 
@@ -132,7 +149,6 @@ function finalizeEdit(taskEl, itemId) {
     console.log(taskEl);
     // console.log(e.target);
     console.log(itemId);
-    
 
     const listItemEl = taskEl.parentElement;
     listItemEl.classList.remove("edit-open");
@@ -149,12 +165,15 @@ function finalizeEdit(taskEl, itemId) {
     updatedTaskEl.classList.add("task");
     listItemEl.insertBefore(updatedTaskEl, taskEl);
 
-    //remove event handlers, remove textarea
+    //remove event handlers from textarea, remove textarea
     let clone = taskEl.cloneNode(false);
     taskEl.replaceWith(clone);
     clone.remove();
 
-    //call this function when click the edit button again?
+    //add event listener to new task span element
+    updatedTaskEl.addEventListener("click", (e) => {
+        openEditItem(e.target.parentElement);
+    });
 }
 
 function autoSizeEdit(element) {
@@ -338,6 +357,11 @@ function addListItemEventListeners(index) {
     checkboxes[index].addEventListener("mouseleave", function () {
         this.classList.remove("clicked");
     });
+
+    tasks[index].addEventListener("click", (e) => {
+        openEditItem(e.target.parentElement);
+    });
+
     editBtns[index].addEventListener("click", (e) => {
         // editBtns[index].classList.contains("edit-open")
         const listItemEl = e.target.parentElement;
@@ -347,7 +371,7 @@ function addListItemEventListeners(index) {
             finalizeEdit(taskEl, listItemEl.id);
         } else {
             // console.log("NOT OPEN SO OPEN");
-            openEditItem(e);
+            openEditItem(e.target.parentElement);
         }
     });
 
@@ -355,6 +379,8 @@ function addListItemEventListeners(index) {
         openDeleteModal(e);
     });
 }
+
+// function addTaskEventListeners()
 
 /**
  * when the checkbox is clicked, add appropriate styles and toggle the state
