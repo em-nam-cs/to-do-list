@@ -91,15 +91,23 @@ deleteModalContainerEl.addEventListener("click", (e) => {
 
 deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
 
-//opens edit mode
-function openEditItem(listItem) {
+/**
+ * opens the edit mode of a list item, edit mode replaces the task text with
+ * a text area for the user to type into that is automatically focused on. Event
+ * listeners are added to make sure the text area re-sizes and to track when
+ * the user is done and comitting the edit (on enter click, clicking outside
+ * of the textarea, clicking the edit button again)
+ * @param {*} listItemEl DOM element that is the list item being edited
+ */
+function openEditItem(listItemEl) {
     console.log("edit");
 
-    const listItemEl = listItem;
     const taskEl = listItemEl.children[HTML_INDEX_OF_TASK];
     const itemId = Number(listItemEl.id);
     const task = listItems.get(itemId).task;
 
+    //add class to mark edit is open
+    listItemEl.classList.add("edit-open");
     editContainerEl.classList.remove("hidden");
     editContainerEl.setAttribute("data-id", itemId);
 
@@ -118,9 +126,6 @@ function openEditItem(listItem) {
     autoSizeEdit(taskEditEl);
     taskEditEl.focus();
 
-    //add class to mark edit is open
-    listItemEl.classList.add("edit-open");
-
     //add event listeners to textarea to resize and commit final edit
     taskEditEl.addEventListener("input", (e) => {
         autoSizeEdit(e.target);
@@ -129,39 +134,29 @@ function openEditItem(listItem) {
         // console.log(e.key);
         if (e.key === "Enter") {
             e.preventDefault();
-            finalizeEdit(itemId);
+            finalizeEdit();
         }
     });
-    editContainerEl.addEventListener("click", exitTextarea);
+    editContainerEl.addEventListener("click", finalizeEdit);
 }
 
-function exitTextarea() {
-    console.log("exiting target area func");
 
-    const itemId = editContainerEl.getAttribute("data-id");
-    console.log(itemId);
-
-    finalizeEdit(itemId);
-}
-
-//update task in storage and DOM
-//don't need entire event, just need the right DOM element to edit
-function finalizeEdit(itemId) {
+/**
+ * Commit edit (store the updated task in the storage and in the DOM) 
+ * and close out of the edit mode (replace the textarea with the task text, 
+ * re-add the event listener that checks if the task text has been clicked
+ * and should open the edit mode)
+ */
+function finalizeEdit() {
     console.log("finalize edit");
 
+    const itemId = editContainerEl.getAttribute("data-id");
     const taskEl = document.getElementById(itemId).children[HTML_INDEX_OF_TASK];
-
-    editContainerEl.classList.add("hidden");
-    // const itemId = editContainerEl.getAttribute("data-id");
-
     const listItemEl = taskEl.parentElement;
-    listItemEl.classList.remove("edit-open");
-
     const updatedTask = taskEl.value;
 
-    console.log(taskEl);
-    console.log(listItemEl);
-    console.log(itemId);
+    editContainerEl.classList.add("hidden");
+    listItemEl.classList.remove("edit-open");
 
     //update in storage
     const itemToUpdate = listItems.get(Number(itemId));
@@ -174,8 +169,7 @@ function finalizeEdit(itemId) {
     listItemEl.insertBefore(updatedTaskEl, taskEl);
 
     //remove event handlers from textarea, editContainer, remove textarea
-    editContainerEl.removeEventListener("click", exitTextarea);
-
+    editContainerEl.removeEventListener("click", finalizeEdit);
     let clone = taskEl.cloneNode(false);
     taskEl.replaceWith(clone);
     clone.remove();
@@ -186,6 +180,11 @@ function finalizeEdit(itemId) {
     });
 }
 
+/**
+ * Resize element so the height is tall enough for any needed scroll height 
+ * and padding that has already been set in the styles
+ * @param {obj} element DOM element that is being resized to the scroll height
+ */
 function autoSizeEdit(element) {
     element.style.height = "auto";
     let currPadding = getComputedStyle(element).getPropertyValue("padding");
@@ -377,7 +376,7 @@ function addListItemEventListeners(index) {
         // console.log(listItemEl.classList.contains("edit-open"));
         if (listItemEl.classList.contains("edit-open")) {
             const taskEl = listItemEl.children[HTML_INDEX_OF_TASK];
-            finalizeEdit(listItemEl.id);
+            finalizeEdit();
         } else {
             // console.log("NOT OPEN SO OPEN");
             openEditItem(e.target.parentElement);
