@@ -72,6 +72,8 @@ const deleteModalEl = document.getElementById("delete-modal");
 const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
 const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
 
+const editContainerEl = document.getElementById("edit-container");
+
 const checkboxes = document.getElementsByClassName("checkbox");
 const tasks = document.getElementsByClassName("task");
 const editBtns = document.getElementsByClassName("edit-btn");
@@ -87,25 +89,19 @@ deleteModalContainerEl.addEventListener("click", (e) => {
     }
 });
 
-//close edit textarea if click outside textarea
-//something like this, but issue textarea dyno generated
-
-// document.body.addEventListener("click", (e) => {
-//     if (!taskTextareaEl.contains(e.target)){
-//         finalizeEdit();
-//     }
-// });
-
 deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
 
 //opens edit mode
 function openEditItem(listItem) {
     console.log("edit");
-    // console.log(e.target.parentElement.id);
+
     const listItemEl = listItem;
     const taskEl = listItemEl.children[HTML_INDEX_OF_TASK];
     const itemId = Number(listItemEl.id);
     const task = listItems.get(itemId).task;
+
+    editContainerEl.classList.remove("hidden");
+    editContainerEl.setAttribute("data-id", itemId);
 
     //create textarea element on DOM, auto populate, replace span
     const taskEditEl = document.createElement("textarea");
@@ -125,7 +121,7 @@ function openEditItem(listItem) {
     //add class to mark edit is open
     listItemEl.classList.add("edit-open");
 
-    //add event listeners to textarea to resize and entering final edit
+    //add event listeners to textarea to resize and commit final edit
     taskEditEl.addEventListener("input", (e) => {
         autoSizeEdit(e.target);
     });
@@ -133,24 +129,39 @@ function openEditItem(listItem) {
         // console.log(e.key);
         if (e.key === "Enter") {
             e.preventDefault();
-            finalizeEdit(e.target, itemId);
+            finalizeEdit(itemId);
         }
     });
+    editContainerEl.addEventListener("click", exitTextarea);
+}
+
+function exitTextarea() {
+    console.log("exiting target area func");
+
+    const itemId = editContainerEl.getAttribute("data-id");
+    console.log(itemId);
+
+    finalizeEdit(itemId);
 }
 
 //update task in storage and DOM
 //don't need entire event, just need the right DOM element to edit
-function finalizeEdit(taskEl, itemId) {
+function finalizeEdit(itemId) {
     console.log("finalize edit");
 
-    console.log(taskEl);
-    // console.log(e.target);
-    console.log(itemId);
+    const taskEl = document.getElementById(itemId).children[HTML_INDEX_OF_TASK];
+
+    editContainerEl.classList.add("hidden");
+    // const itemId = editContainerEl.getAttribute("data-id");
 
     const listItemEl = taskEl.parentElement;
     listItemEl.classList.remove("edit-open");
 
     const updatedTask = taskEl.value;
+
+    console.log(taskEl);
+    console.log(listItemEl);
+    console.log(itemId);
 
     //update in storage
     const itemToUpdate = listItems.get(Number(itemId));
@@ -162,7 +173,9 @@ function finalizeEdit(taskEl, itemId) {
     updatedTaskEl.classList.add("task");
     listItemEl.insertBefore(updatedTaskEl, taskEl);
 
-    //remove event handlers from textarea, remove textarea
+    //remove event handlers from textarea, editContainer, remove textarea
+    editContainerEl.removeEventListener("click", exitTextarea);
+
     let clone = taskEl.cloneNode(false);
     taskEl.replaceWith(clone);
     clone.remove();
@@ -174,7 +187,6 @@ function finalizeEdit(taskEl, itemId) {
 }
 
 function autoSizeEdit(element) {
-    // console.log(element);
     element.style.height = "auto";
     let currPadding = getComputedStyle(element).getPropertyValue("padding");
     currPadding = Number(currPadding.replace(/\D/g, ""));
@@ -225,7 +237,7 @@ function deleteItem() {
     console.log("item deleting");
     // console.log("list items map before:");
     // console.log(listItems);
-
+    editContainerEl.classList.add("hidden"); //in case of del in edit-mode, still needs to close/hide edit
     deleteModalContainerEl.classList.add("hidden");
     // console.log(deleteModalContainerEl.getAttribute("data-id"));
     const itemId = Number(deleteModalContainerEl.getAttribute("data-id"));
@@ -365,7 +377,7 @@ function addListItemEventListeners(index) {
         // console.log(listItemEl.classList.contains("edit-open"));
         if (listItemEl.classList.contains("edit-open")) {
             const taskEl = listItemEl.children[HTML_INDEX_OF_TASK];
-            finalizeEdit(taskEl, listItemEl.id);
+            finalizeEdit(listItemEl.id);
         } else {
             // console.log("NOT OPEN SO OPEN");
             openEditItem(e.target.parentElement);

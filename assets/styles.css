@@ -142,10 +142,11 @@ hr {
     cursor: text;
 }
 
-textarea.task{
+textarea.task {
     border: 2px var(--accent-color) solid;
     outline: none;
     padding: 5px;
+    z-index: 2;
 }
 
 .modal-btn,
@@ -159,6 +160,7 @@ textarea.task{
     width: var(--list-item-height);
 
     cursor: pointer;
+    z-index: 2;
 }
 
 .edit-btn {
@@ -191,7 +193,7 @@ textarea.task{
 }
 
 .delete-container {
-    z-index: 1;
+    z-index: 3;
     background-color: color-mix(
         in srgb,
         var(--page-background-color),
@@ -253,4 +255,18 @@ textarea.task{
 
 .hidden {
     display: none;
+}
+
+.edit-container {
+    background-color: transparent;
+    z-index: 1;
+    background-color: color-mix(in srgb, pink, transparent 50%);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+
+    cursor: pointer;
 }
