@@ -260,7 +260,6 @@ textarea.task {
 .edit-container {
     background-color: transparent;
     z-index: 1;
-    background-color: color-mix(in srgb, pink, transparent 50%);
 
     position: fixed;
     top: 0;
