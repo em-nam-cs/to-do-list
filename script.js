@@ -15,6 +15,12 @@ For temporary data persistance, make sure browser settings allow
 where 1 is true and 0 is false
 The number of list items is localstorage.length (assume nothing else is in local storage)
 ListItem class variables and the listItems Map will still exist and are able to determine if all complete
+
+Still use listItems map to access data because it is populated from the localstorage
+Each Create, update, delete also updates the local storage so it is persistant 
+
+Assumes that any key that is a number in local storage is meant to be an id for a task
+    - Set MAX_TASKS so breaks out of infinite loop in case data in local storage that is not a number/id
  */
 
 console.log("RUNING Running");
@@ -30,6 +36,7 @@ const populate = [
     },
 ];
 const HTML_INDEX_OF_TASK = 1;
+const MAX_TASKS = 50;
 const listItems = new Map();
 
 class ListItem {
@@ -50,9 +57,6 @@ class ListItem {
         ListItem.numListItems++;
         ListItem.idCounter++;
 
-        //ISSUE IF delete item, then create it can have duplicate id (because
-        //at time of creation the numItems is the same)
-
         this.id = ListItem.idCounter;
     }
 
@@ -64,11 +68,6 @@ class ListItem {
         listItems.delete(this.id); //del from map
         localStorage.removeItem(this.id); //del from local
     }
-
-    // test() {
-    //     console.log("class method");
-    //     return true;
-    // }
 }
 
 const newItemInput = document.getElementById("new-item-input");
@@ -169,10 +168,8 @@ function finalizeEdit() {
     const itemToUpdate = listItems.get(Number(itemId));
     itemToUpdate.task = updatedTask;
 
-
-    const complete = getComplete(itemId);   //keep check the same
-    localStorage.setItem(itemId, (complete * 1) + updatedTask); //update in local
-
+    const complete = getComplete(itemId); //keep check the same
+    localStorage.setItem(itemId, complete * 1 + updatedTask); //update in local
 
     //switch back to span, update task in DOM
     const updatedTaskEl = document.createElement("span");
@@ -257,7 +254,7 @@ function deleteItem() {
     //need to remove from listItems map
     listItems.get(itemId).deleteItem();
 
-    localStorage.removeItem(itemId);    //remove from local storage
+    localStorage.removeItem(itemId); //remove from local storage
 
     //need to remove from DOM
     deleteListItemDOM(itemId);
@@ -292,29 +289,27 @@ function populateAllListItems() {
     //popualte from local storage
     let idCount = 0;
     for (let i = 0; i < localStorage.length; i++) {
-        // console.log(localStorage);
-        // console.log(idCount);
-        // console.log(i);
         let itemString = localStorage.getItem(idCount);
 
-        // console.log(itemString);
         // accesses correct item even if previous id numbers were deleted
         while (itemString === null) {
             idCount++;
             itemString = localStorage.getItem(idCount);
+            if (idCount > MAX_TASKS) {
+                return;
+            }
         }
 
         const complete = getComplete(idCount);
         const task = getTask(idCount);
         localStorage.removeItem(idCount); //need to remove from storage, because adding new Item will re-assign new id
 
-        // console.log(`${complete}, ${task} `);
-
         const newListItem = addNewItemToList(task, complete);
         createNewListItemDOM(i, newListItem.id); //add most recent item to display on DOM
 
         idCount++;
     }
+    //end populate from local
 }
 
 /**
