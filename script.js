@@ -9,6 +9,19 @@
  */
 
 //RECALL: when CRUD, need to update STORAGE AND DOM
+/**
+For temporary data persistance, make sure browser settings allow 
+(Key, value) pairs are stored as (itemId, "1, Task text") or ("0, Task Text")
+where 1 is true and 0 is false
+The number of list items is localstorage.length (assume nothing else is in local storage)
+ListItem class variables and the listItems Map will still exist and are able to determine if all complete
+
+Still use listItems map to access data because it is populated from the localstorage
+Each Create, update, delete also updates the local storage so it is persistant 
+
+Assumes that any key that is a number in local storage is meant to be an id for a task
+    - Set MAX_TASKS so breaks out of infinite loop in case data in local storage that is not a number/id
+ */
 
 console.log("RUNING Running");
 
@@ -23,6 +36,7 @@ const populate = [
     },
 ];
 const HTML_INDEX_OF_TASK = 1;
+const MAX_TASKS = 50;
 const listItems = new Map();
 
 class ListItem {
@@ -43,9 +57,6 @@ class ListItem {
         ListItem.numListItems++;
         ListItem.idCounter++;
 
-        //ISSUE IF delete item, then create it can have duplicate id (because
-        //at time of creation the numItems is the same)
-
         this.id = ListItem.idCounter;
     }
 
@@ -54,12 +65,8 @@ class ListItem {
         if (this.complete) {
             ListItem.numCompleted--;
         }
-        listItems.delete(this.id);
-    }
-
-    test() {
-        console.log("class method");
-        return true;
+        listItems.delete(this.id); //del from map
+        localStorage.removeItem(this.id); //del from local
     }
 }
 
@@ -140,10 +147,9 @@ function openEditItem(listItemEl) {
     editContainerEl.addEventListener("click", finalizeEdit);
 }
 
-
 /**
- * Commit edit (store the updated task in the storage and in the DOM) 
- * and close out of the edit mode (replace the textarea with the task text, 
+ * Commit edit (store the updated task in the storage and in the DOM)
+ * and close out of the edit mode (replace the textarea with the task text,
  * re-add the event listener that checks if the task text has been clicked
  * and should open the edit mode)
  */
@@ -161,6 +167,9 @@ function finalizeEdit() {
     //update in storage
     const itemToUpdate = listItems.get(Number(itemId));
     itemToUpdate.task = updatedTask;
+
+    const complete = getComplete(itemId); //keep check the same
+    localStorage.setItem(itemId, complete * 1 + updatedTask); //update in local
 
     //switch back to span, update task in DOM
     const updatedTaskEl = document.createElement("span");
@@ -181,7 +190,7 @@ function finalizeEdit() {
 }
 
 /**
- * Resize element so the height is tall enough for any needed scroll height 
+ * Resize element so the height is tall enough for any needed scroll height
  * and padding that has already been set in the styles
  * @param {obj} element DOM element that is being resized to the scroll height
  */
@@ -245,6 +254,8 @@ function deleteItem() {
     //need to remove from listItems map
     listItems.get(itemId).deleteItem();
 
+    localStorage.removeItem(itemId); //remove from local storage
+
     //need to remove from DOM
     deleteListItemDOM(itemId);
 }
@@ -265,13 +276,40 @@ populateAllListItems(); //populate items (WRAP IN ON LOAD???)
  */
 function populateAllListItems() {
     console.log("populating list items");
-    for (let i = 0; i < populate.length; i++) {
-        const newListItem = addNewItemToList(
-            populate[i].task,
-            populate[i].complete
-        );
-        createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
+
+    //populate from pre-stored array
+    // for (let i = 0; i < populate.length; i++) {
+    //     const newListItem = addNewItemToList(
+    //         populate[i].task,
+    //         populate[i].complete
+    //     );
+    //     createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
+    // }
+
+    //popualte from local storage
+    let idCount = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+        let itemString = localStorage.getItem(idCount);
+
+        // accesses correct item even if previous id numbers were deleted
+        while (itemString === null) {
+            idCount++;
+            itemString = localStorage.getItem(idCount);
+            if (idCount > MAX_TASKS) {
+                return;
+            }
+        }
+
+        const complete = getComplete(idCount);
+        const task = getTask(idCount);
+        localStorage.removeItem(idCount); //need to remove from storage, because adding new Item will re-assign new id
+
+        const newListItem = addNewItemToList(task, complete);
+        createNewListItemDOM(i, newListItem.id); //add most recent item to display on DOM
+
+        idCount++;
     }
+    //end populate from local
 }
 
 /**
@@ -308,7 +346,9 @@ function addNewItem(e) {
  */
 function addNewItemToList(task, complete) {
     const newListItem = new ListItem(task, complete);
-    listItems.set(newListItem.id, newListItem);
+    listItems.set(newListItem.id, newListItem); //store in map (not persistant)
+    const newListItemString = Number(complete) + task;
+    localStorage.setItem(newListItem.id, newListItemString); //store in local
     return newListItem;
 }
 
@@ -400,7 +440,10 @@ function toggleCheckbox() {
     this.classList.add("clicked");
     const itemId = Number(this.parentElement.id);
     const completed = this.classList.contains("checked");
-    listItems.get(itemId).complete = completed;
+    listItems.get(itemId).complete = completed; //update check in map
+
+    const task = getTask(itemId); //maintain same task from local storage
+    localStorage.setItem(itemId, completed * 1 + task); //update check in local
 
     if (completed) {
         ListItem.numCompleted++;
@@ -408,6 +451,18 @@ function toggleCheckbox() {
     } else {
         ListItem.numCompleted--;
     }
+}
+
+//get completed data from local storage given an id
+function getComplete(id) {
+    const itemString = localStorage.getItem(id);
+    return itemString.slice(0, 1) * 1; //convert to bool
+}
+
+//get task string from local storage given an id
+function getTask(id) {
+    const itemString = localStorage.getItem(id);
+    return itemString.slice(1);
 }
 
 /**
