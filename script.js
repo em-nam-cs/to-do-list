@@ -9,6 +9,12 @@
  */
 
 //RECALL: when CRUD, need to update STORAGE AND DOM
+/**
+For temporary data persistance, make sure browser settings allow 
+(Key, value) pairs are stored as (itemId, "T, Task text") or ("F, Task Text")
+The number of list items is localstorage.length (assume nothing else is in local storage)
+ListItem class variables and the listItems Map will still exist and are able to determine if all complete
+ */
 
 console.log("RUNING Running");
 
@@ -57,10 +63,10 @@ class ListItem {
         listItems.delete(this.id);
     }
 
-    test() {
-        console.log("class method");
-        return true;
-    }
+    // test() {
+    //     console.log("class method");
+    //     return true;
+    // }
 }
 
 const newItemInput = document.getElementById("new-item-input");
@@ -140,10 +146,9 @@ function openEditItem(listItemEl) {
     editContainerEl.addEventListener("click", finalizeEdit);
 }
 
-
 /**
- * Commit edit (store the updated task in the storage and in the DOM) 
- * and close out of the edit mode (replace the textarea with the task text, 
+ * Commit edit (store the updated task in the storage and in the DOM)
+ * and close out of the edit mode (replace the textarea with the task text,
  * re-add the event listener that checks if the task text has been clicked
  * and should open the edit mode)
  */
@@ -181,7 +186,7 @@ function finalizeEdit() {
 }
 
 /**
- * Resize element so the height is tall enough for any needed scroll height 
+ * Resize element so the height is tall enough for any needed scroll height
  * and padding that has already been set in the styles
  * @param {obj} element DOM element that is being resized to the scroll height
  */
