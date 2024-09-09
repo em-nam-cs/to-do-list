@@ -11,7 +11,8 @@
 //RECALL: when CRUD, need to update STORAGE AND DOM
 /**
 For temporary data persistance, make sure browser settings allow 
-(Key, value) pairs are stored as (itemId, "T, Task text") or ("F, Task Text")
+(Key, value) pairs are stored as (itemId, "1, Task text") or ("0, Task Text")
+where 1 is true and 0 is false
 The number of list items is localstorage.length (assume nothing else is in local storage)
 ListItem class variables and the listItems Map will still exist and are able to determine if all complete
  */
@@ -60,7 +61,8 @@ class ListItem {
         if (this.complete) {
             ListItem.numCompleted--;
         }
-        listItems.delete(this.id);
+        listItems.delete(this.id); //del from map
+        localStorage.removeItem(this.id); //del from local
     }
 
     // test() {
@@ -270,12 +272,41 @@ populateAllListItems(); //populate items (WRAP IN ON LOAD???)
  */
 function populateAllListItems() {
     console.log("populating list items");
-    for (let i = 0; i < populate.length; i++) {
-        const newListItem = addNewItemToList(
-            populate[i].task,
-            populate[i].complete
-        );
-        createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
+
+    //populate from pre-stored array
+    // for (let i = 0; i < populate.length; i++) {
+    //     const newListItem = addNewItemToList(
+    //         populate[i].task,
+    //         populate[i].complete
+    //     );
+    //     createNewListItemDOM(listItems.size - 1, newListItem.id); //add most recent item to display on DOM
+    // }
+
+    //popualte from local storage
+    let idCount = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+        // console.log(localStorage);
+        // console.log(idCount);
+        // console.log(i);
+        let itemString = localStorage.getItem(idCount);
+
+        // console.log(itemString);
+        // accesses correct item even if previous id numbers were deleted
+        while (itemString === null) {
+            idCount++;
+            itemString = localStorage.getItem(idCount);
+        }
+
+        const complete = getComplete(idCount);
+        const task = getTask(idCount);
+        localStorage.removeItem(idCount); //need to remove from storage, because adding new Item will re-assign new id
+
+        // console.log(`${complete}, ${task} `);
+
+        const newListItem = addNewItemToList(task, complete);
+        createNewListItemDOM(i, newListItem.id); //add most recent item to display on DOM
+
+        idCount++;
     }
 }
 
@@ -313,7 +344,9 @@ function addNewItem(e) {
  */
 function addNewItemToList(task, complete) {
     const newListItem = new ListItem(task, complete);
-    listItems.set(newListItem.id, newListItem);
+    listItems.set(newListItem.id, newListItem); //store in map (not persistant)
+    const newListItemString = Number(complete) + task;
+    localStorage.setItem(newListItem.id, newListItemString); //store in local
     return newListItem;
 }
 
@@ -405,7 +438,7 @@ function toggleCheckbox() {
     this.classList.add("clicked");
     const itemId = Number(this.parentElement.id);
     const completed = this.classList.contains("checked");
-    listItems.get(itemId).complete = completed;
+    listItems.get(itemId).complete = completed; //update check in map
 
     if (completed) {
         ListItem.numCompleted++;
@@ -413,6 +446,18 @@ function toggleCheckbox() {
     } else {
         ListItem.numCompleted--;
     }
+}
+
+//get completed data from local storage given an id
+function getComplete(id) {
+    const itemString = localStorage.getItem(id);
+    return itemString.slice(0, 1) * 1; //convert to bool
+}
+
+//get task string from local storage given an id
+function getTask(id) {
+    const itemString = localStorage.getItem(id);
+    return itemString.slice(1);
 }
 
 /**
