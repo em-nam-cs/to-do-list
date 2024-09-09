@@ -87,6 +87,8 @@ const editBtns = document.getElementsByClassName("edit-btn");
 const deleteBtns = document.getElementsByClassName("delete-btn");
 const deleteModalTaskText = document.getElementById("delete-modal-task-text");
 
+const congratsContainerEl = document.getElementById("congrats-container");
+
 newItemForm.addEventListener("submit", addNewItem);
 confirmDeleteBtn.addEventListener("click", deleteItem);
 cancelDeleteBtn.addEventListener("click", closeDeleteModal);
@@ -96,7 +98,24 @@ deleteModalContainerEl.addEventListener("click", (e) => {
     }
 });
 
+
+congratsContainerEl.addEventListener("click", showConfetti);
+
+
 deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
+
+function showConfetti() {
+    console.log("congrats functcion")
+    const confetti = document.createElement("div");
+    confetti.textContent = "🎉";
+    confetti.classList.add("confetti");
+    confetti.style.left = Math.random() * innerWidth + "px";
+    congratsContainerEl.appendChild(confetti);
+
+    setTimeout(() => {
+        confetti.remove();
+    }, 5000);
+};
 
 /**
  * opens the edit mode of a list item, edit mode replaces the task text with
