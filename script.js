@@ -169,6 +169,11 @@ function finalizeEdit() {
     const itemToUpdate = listItems.get(Number(itemId));
     itemToUpdate.task = updatedTask;
 
+
+    const complete = getComplete(itemId);   //keep check the same
+    localStorage.setItem(itemId, (complete * 1) + updatedTask); //update in local
+
+
     //switch back to span, update task in DOM
     const updatedTaskEl = document.createElement("span");
     updatedTaskEl.innerText = updatedTask;
@@ -251,6 +256,8 @@ function deleteItem() {
 
     //need to remove from listItems map
     listItems.get(itemId).deleteItem();
+
+    localStorage.removeItem(itemId);    //remove from local storage
 
     //need to remove from DOM
     deleteListItemDOM(itemId);
@@ -439,6 +446,9 @@ function toggleCheckbox() {
     const itemId = Number(this.parentElement.id);
     const completed = this.classList.contains("checked");
     listItems.get(itemId).complete = completed; //update check in map
+
+    const task = getTask(itemId); //maintain same task from local storage
+    localStorage.setItem(itemId, completed * 1 + task); //update check in local
 
     if (completed) {
         ListItem.numCompleted++;
