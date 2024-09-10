@@ -13,11 +13,24 @@
         <title>To Do List</title>
     </head>
     <body>
+        <div
+            id="edit-container"
+            class="edit-container hidden"
+        ></div>
 
-        <div id="edit-container" class="edit-container hidden">
-
+        <div
+            id="congrats-container"
+            class="congrats-container hidden"
+        >
+            <div class="card">
+                <p>Good work completing everything!</p>
+            </div>
         </div>
-        <div id="delete-container" class="delete-container hidden">
+
+        <div
+            id="delete-container"
+            class="delete-container hidden"
+        >
             <div
                 id="delete-modal"
                 class="modal"
@@ -103,5 +116,6 @@
         </div>
 
         <script src="script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
     </body>
 </html>
