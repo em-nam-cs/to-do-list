@@ -134,19 +134,23 @@ hr {
 }
 
 .task {
+    --edit-border-padding: 2px;
     font-size: large;
     width: 90%;
-    padding: 0px 5px;
+    /* padding: 0px 5px; */
     background-color: transparent;
+    padding: calc(var(--edit-border-padding) + 5px);
 
     cursor: text;
 }
 
 textarea.task {
-    border: 2px var(--accent-color) solid;
+    border: var(--edit-border-padding) var(--accent-color) solid;
     outline: none;
     padding: 5px;
     z-index: 2;
+    vertical-align: bottom;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .modal-btn,
@@ -252,7 +256,6 @@ textarea.task {
 /* #delete-modal:focus{
     background-color: #92bb77;
 } */
-
 
 .edit-container {
     background-color: transparent;

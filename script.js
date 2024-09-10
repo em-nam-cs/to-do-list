@@ -29,9 +29,8 @@ https://confetti.js.org/more.html
  */
 
 /**
- ISSUE: can open multiple edits at the same time, need to make other task items
- unclickable if edit open (click anywhere outside of the specific task should close 
- the window, buttons shouldn't override and shouldn't color on hover)
+ ISSUE: //need to prevent re-sizing too big textarea and messes up spacing on list
+
   */
 
 console.log("RUNING Running");
@@ -219,9 +218,9 @@ function finalizeEdit() {
  * @param {obj} element DOM element that is being resized to the scroll height
  */
 function autoSizeEdit(element) {
-    element.style.height = "auto";
     let currPadding = getComputedStyle(element).getPropertyValue("padding");
     currPadding = Number(currPadding.replace(/\D/g, ""));
+    // currPadding = 0;
     element.style.height = element.scrollHeight + currPadding + "px";
 }
 
@@ -501,14 +500,7 @@ function getTask(id) {
  */
 function checkAllComplete() {
     console.log("checking if all complete");
-    // return ListItem.numCompleted == ListItem.numListItems;
-    console.log(listContainerEl.closest("edit-open"));
-    console.log(document.getElementsByClassName("edit-open"));
     if (ListItem.numCompleted == ListItem.numListItems) {
-        if (document.getElementsByClassName("edit-open").length != 0) {
-            console.log("edit open here");
-            finalizeEdit();
-        }
         congratsContainerEl.classList.remove("hidden");
         showConfetti();
     }
