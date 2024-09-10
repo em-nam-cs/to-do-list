@@ -23,8 +23,20 @@ Assumes that any key that is a number in local storage is meant to be an id for 
     - Set MAX_TASKS so breaks out of infinite loop in case data in local storage that is not a number/id
  */
 
+/**
+ For congrats: Make sure to check that all completed there is at least one task
+https://confetti.js.org/more.html
+ */
+
+/**
+ ISSUE: can open multiple edits at the same time, need to make other task items
+ unclickable if edit open (click anywhere outside of the specific task should close 
+ the window, buttons shouldn't override and shouldn't color on hover)
+  */
+
 console.log("RUNING Running");
 
+// const confetti = require("canvas-confetti");
 const populate = [
     {
         task: "TEST task 1",
@@ -98,24 +110,14 @@ deleteModalContainerEl.addEventListener("click", (e) => {
     }
 });
 
-
-congratsContainerEl.addEventListener("click", showConfetti);
-
+congratsContainerEl.addEventListener("click", closeCongratsDisplay);
 
 deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
 
-function showConfetti() {
-    console.log("congrats functcion")
-    const confetti = document.createElement("div");
-    confetti.textContent = "🎉";
-    confetti.classList.add("confetti");
-    confetti.style.left = Math.random() * innerWidth + "px";
-    congratsContainerEl.appendChild(confetti);
-
-    setTimeout(() => {
-        confetti.remove();
-    }, 5000);
-};
+function closeCongratsDisplay() {
+    console.log("clciking congrats disp");
+    congratsContainerEl.classList.add("hidden");
+}
 
 /**
  * opens the edit mode of a list item, edit mode replaces the task text with
@@ -485,10 +487,55 @@ function getTask(id) {
 }
 
 /**
- * checks if all list items are completed
- * @returns true if the number of complete tasks matches the num of list items
+ * checks if all list items are completed, if they are then display the congratulations menu
  */
 function checkAllComplete() {
     console.log("checking if all complete");
-    return ListItem.numCompleted == ListItem.numListItems;
+    // return ListItem.numCompleted == ListItem.numListItems;
+    console.log(listContainerEl.closest("edit-open"));
+    console.log(document.getElementsByClassName("edit-open"));
+    if (ListItem.numCompleted == ListItem.numListItems) {
+        if (document.getElementsByClassName("edit-open").length != 0) {
+            console.log("edit open here");
+            finalizeEdit();
+        }
+        congratsContainerEl.classList.remove("hidden");
+        showConfetti();
+    }
+}
+
+/**
+ * calls the confetti script with specific parameters to get a type of confetti effect
+ * Based on examples here: https://confetti.js.org/more.html
+ */
+function showConfetti() {
+    const defaults = {
+        spread: 360,
+        ticks: 50,
+        gravity: 0.5,
+        decay: 0.94,
+        startVelocity: 20,
+        shapes: ["star"],
+        colors: ["FFE400", "FFBD00", "E89400", "FFCA6C", "FDFFB8"],
+    };
+
+    function shoot() {
+        confetti({
+            ...defaults,
+            particleCount: 40,
+            scalar: 1.2,
+            shapes: ["star"],
+        });
+
+        confetti({
+            ...defaults,
+            particleCount: 10,
+            scalar: 0.75,
+            shapes: ["circle"],
+        });
+    }
+
+    setTimeout(shoot, 0);
+    setTimeout(shoot, 100);
+    setTimeout(shoot, 200);
 }
