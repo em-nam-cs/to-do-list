@@ -101,6 +101,9 @@ deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
  */
 function openEditItem(listItemEl) {
     console.log("edit");
+    if (document.getElementsByClassName("edit-open").length != 0) {
+        finalizeEdit();
+    }
 
     const taskEl = listItemEl.children[HTML_INDEX_OF_TASK];
     const itemId = Number(listItemEl.id);
@@ -140,10 +143,9 @@ function openEditItem(listItemEl) {
     editContainerEl.addEventListener("click", finalizeEdit);
 }
 
-
 /**
- * Commit edit (store the updated task in the storage and in the DOM) 
- * and close out of the edit mode (replace the textarea with the task text, 
+ * Commit edit (store the updated task in the storage and in the DOM)
+ * and close out of the edit mode (replace the textarea with the task text,
  * re-add the event listener that checks if the task text has been clicked
  * and should open the edit mode)
  */
@@ -181,7 +183,7 @@ function finalizeEdit() {
 }
 
 /**
- * Resize element so the height is tall enough for any needed scroll height 
+ * Resize element so the height is tall enough for any needed scroll height
  * and padding that has already been set in the styles
  * @param {obj} element DOM element that is being resized to the scroll height
  */
@@ -218,6 +220,10 @@ function closeDeleteModal() {
  */
 function openDeleteModal(e) {
     console.log("open del modal");
+    if (document.getElementsByClassName("edit-open").length != 0) {
+        finalizeEdit();
+    }
+
     deleteModalContainerEl.classList.remove("hidden");
     setTimeout(() => {
         confirmDeleteBtn.focus({ focusVisible: true }); //set focus automatically on confirm delete
@@ -396,6 +402,9 @@ function addListItemEventListeners(index) {
  * completed. Check if all tasks are completed
  */
 function toggleCheckbox() {
+    if (document.getElementsByClassName("edit-open").length != 0) {
+        finalizeEdit();
+    }
     this.classList.toggle("checked");
     this.classList.add("clicked");
     const itemId = Number(this.parentElement.id);
