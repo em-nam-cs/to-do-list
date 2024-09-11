@@ -103,6 +103,7 @@ hr {
     height: 75vh;
     overflow: scroll;
     scrollbar-color: var(--accent-color) transparent;
+    scrollbar-width: thin;
 }
 
 @media (height <= 690px) and (height > 540px) {
@@ -136,7 +137,7 @@ hr {
 .task {
     --edit-border-padding: 2px;
     font-size: large;
-    width: 90%;
+    width: 100%;
     /* padding: 0px 5px; */
     background-color: transparent;
     padding: calc(var(--edit-border-padding) + 5px);
