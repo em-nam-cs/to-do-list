@@ -28,14 +28,9 @@ Assumes that any key that is a number in local storage is meant to be an id for 
 https://confetti.js.org/more.html
  */
 
-/**
- ISSUE: //need to prevent re-sizing too big textarea and messes up spacing on list
-
-  */
-
 console.log("RUNING Running");
 
-// const confetti = require("canvas-confetti");
+//populate array is not being used, local storage populating
 const populate = [
     {
         task: "TEST task 1",
@@ -81,6 +76,11 @@ class ListItem {
     }
 }
 
+// const focusableElements = document.querySelectorAll(
+//     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+// );
+// const firstFocusable = focusableElements[0];
+// console.log(focusableElements);
 const newItemInput = document.getElementById("new-item-input");
 const newItemForm = document.getElementById("new-item-form");
 const listContainerEl = document.getElementById("list-container");
@@ -89,6 +89,8 @@ const deleteModalContainerEl = document.getElementById("delete-container");
 const deleteModalEl = document.getElementById("delete-modal");
 const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
 const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
+const deleteModalTaskText = document.getElementById("delete-modal-task-text");
+const modalBtns = document.getElementsByClassName("modal-btn");
 
 const editContainerEl = document.getElementById("edit-container");
 
@@ -96,7 +98,6 @@ const checkboxes = document.getElementsByClassName("checkbox");
 const tasks = document.getElementsByClassName("task");
 const editBtns = document.getElementsByClassName("edit-btn");
 const deleteBtns = document.getElementsByClassName("delete-btn");
-const deleteModalTaskText = document.getElementById("delete-modal-task-text");
 
 const congratsContainerEl = document.getElementById("congrats-container");
 
@@ -109,14 +110,23 @@ deleteModalContainerEl.addEventListener("click", (e) => {
     }
 });
 
+/**
+If delete modal is open and the focus is not in the delete modal, then reset
+the focus to the first modal button
+ */
+document.addEventListener("focusin", (e) => {
+    if (
+        !deleteModalContainerEl.contains(e.target) &&
+        !deleteModalContainerEl.classList.contains("hidden")
+    ) {
+        console.log("need to refocus here");
+        modalBtns[0].focus({ focusVisible: true });
+    }
+});
+
 congratsContainerEl.addEventListener("click", closeCongratsDisplay);
 
 deleteModalContainerEl.addEventListener("mousemove", removeDeleteBtnFocus);
-
-function closeCongratsDisplay() {
-    console.log("clciking congrats disp");
-    congratsContainerEl.classList.add("hidden");
-}
 
 /**
  * opens the edit mode of a list item, edit mode replaces the task text with
@@ -455,8 +465,6 @@ function addListItemEventListeners(index) {
     });
 }
 
-// function addTaskEventListeners()
-
 /**
  * when the checkbox is clicked, add appropriate styles and toggle the state
  * Update the ListItem class and instance variables to reflect count of number of tasks
@@ -540,4 +548,9 @@ function showConfetti() {
     setTimeout(shoot, 0);
     setTimeout(shoot, 100);
     setTimeout(shoot, 200);
+}
+
+function closeCongratsDisplay() {
+    console.log("clciking congrats disp");
+    congratsContainerEl.classList.add("hidden");
 }
