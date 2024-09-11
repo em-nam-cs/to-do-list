@@ -248,7 +248,7 @@ textarea.task {
 .modal {
     cursor: default;
 
-    /*override certain .card styles below*/
+    /*override certain .card styles below for delete modal*/
     --modal-width: 50vw;
     width: var(--modal-width);
     border: 2px var(--page-text-color) solid;
@@ -256,11 +256,17 @@ textarea.task {
 }
 
 .card p {
+    font-weight: 600;
     padding: 5px;
 }
 
+#delete-modal-task-text {
+    font-weight: normal;
+    max-height: 40vh;
+    overflow: scroll;
+}
+
 .congrats-container > .card p {
-    font-weight: 600;
     margin: 0;
 }
 
