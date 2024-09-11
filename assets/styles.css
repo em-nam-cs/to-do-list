@@ -150,7 +150,21 @@ textarea.task {
     padding: 5px;
     z-index: 2;
     vertical-align: bottom;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+.edit-container {
+    background-color: transparent;
+    z-index: 1;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+
+    cursor: pointer;
 }
 
 .modal-btn,
@@ -196,110 +210,81 @@ textarea.task {
     background-image: url("../assets/checkmark-removebg.png");
 }
 
+.popup {
+    z-index: 3;
+    background-color: color-mix(
+        in srgb,
+        var(--page-background-color),
+        transparent 70%
+    );
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    --max-popup-width: 600px;
+}
+
 .delete-container {
-    z-index: 3;
-    background-color: color-mix(
-        in srgb,
-        var(--page-background-color),
-        transparent 50%
-    );
-
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     cursor: pointer;
-}
-
-.modal {
-    --modal-width: 50vw;
-    border: 3px var(--page-text-color) solid;
-    background-color: var(--accent-color);
-    opacity: 1;
-
-    padding: 20px;
-
-    cursor: default;
-    width: var(--modal-width);
-}
-
-.modal-btn-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.modal-btn {
-    width: auto;
-    min-width: calc(var(--modal-width) / 3);
-    height: auto;
-    margin: 5px 0px;
-    padding: 5px 0px;
-}
-
-.modal-btn:hover,
-.modal-btn:focus {
-    background-color: color-mix(in srgb, var(--accent-color), black 20%);
-    outline: none;
-}
-
-/* #confirm-delete-btn:focus, #confirm-delete-btn:hover{
-    background-color: #92bb77;
-} */
-
-/* #delete-modal:focus{
-    background-color: #92bb77;
-} */
-
-.edit-container {
-    background-color: transparent;
-    z-index: 1;
-
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-
-    cursor: pointer;
-}
-
-.congrats-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    z-index: 3;
-    background-color: color-mix(
-        in srgb,
-        var(--page-background-color),
-        transparent 75%
-    );
 }
 
 .card {
     background-color: color-mix(in srgb, var(--accent-color), white 20%);
-    color: var(--page-text-color);
-    max-width: 600px;
+
+    width: auto;
+    max-width: var(--max-popup-width);
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     padding: 3rem;
 }
 
+.modal {
+    cursor: default;
+
+    /*override certain .card styles below*/
+    --modal-width: 50vw;
+    width: var(--modal-width);
+    border: 2px var(--page-text-color) solid;
+    padding: 2rem;
+}
+
 .card p {
+    padding: 5px;
+}
+
+.congrats-container > .card p {
     font-weight: 600;
     margin: 0;
-    padding: 10px;
+}
+
+.modal-btn-container {
+    display: flex;
+    justify-content: center;
+    gap: min(calc(var(--modal-width) / 9), calc(var(--max-popup-width) / 9));
+}
+
+.modal-btn {
+    width: auto;
+    min-width: min(
+        calc(var(--modal-width) / 3),
+        calc(var(--max-popup-width) / 3)
+    );
+    height: auto;
+    margin: 5px 0px;
+    padding: 10px 0px;
+    border-radius: 500rem; /*value does not matter, set extra large to round bubble*/
+}
+
+.modal-btn:hover,
+.modal-btn:focus {
+    background-color: color-mix(in srgb, var(--accent-color), black 15%);
+    outline: none;
 }
 
 .hidden {
